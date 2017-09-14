@@ -5,6 +5,7 @@ Enjoy!
 
 ## Download
 To run this game on your local machine, open command line and navigate to where you want to save this project. Then run this command:
+
 `$ git clone https://github.com/anthonyc1/multiplayerUNO.git`
 
 ## Run
