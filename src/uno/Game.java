@@ -312,9 +312,9 @@ public class Game {
         }
     }
 
-    public static void main(String[] args) {
-
-        Setup.dealCards();
-        gamePlay();
-    }
+//    public static void main(String[] args) {
+//
+//        Setup.dealCards();
+//        gamePlay();
+//    }
 }

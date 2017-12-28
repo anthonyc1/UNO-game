@@ -1,5 +1,6 @@
 package gui;
 
+import static gui.GameSettingDialog.getGameSettingDialog;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,16 +12,39 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import uno.Game;
+import uno.Setup;
 
 public class Uno extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Set up uno gameplay setting
+        GameSettingDialog dialog = getGameSettingDialog();
+        
+        switch (dialog.getSetting()) {
+            case 1:
+                Setup.dealCards();
+                Game.gamePlay();
+                break;
+            case 2:
+                initGUI(primaryStage);
+                break;
+            case 3:
+                
+                break;
+            default:
+                break;
+        }
+
+    }
+    
+    public void initGUI(Stage primaryStage){
         BorderPane pane = new BorderPane();
         pane.setPrefSize(1000, 800);
         Scene scene = new Scene(pane);
         //Load the stylesheet
-        scene.getStylesheets().add("style.css");
+        scene.getStylesheets().add("css/style.css");
 
         GridPane opponent = new GridPane();
         opponent.setPrefSize(700, 100);
@@ -33,18 +57,16 @@ public class Uno extends Application {
 //		pane.setRight(new CustomPane("Right"));
 //		pane.setLeft(new CustomPane("Left"));
         // Event handling
-        Button btn = new Button();
-        btn.setText("Play UNO!");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-            }
-        });
+//        Button btn = new Button();
+//        btn.setText("Play UNO!");
+//        btn.setOnAction(e -> {
+//            
+//        });
+        
 
         StackPane root = new StackPane();
         root.setPrefSize(700, 600);
-        root.getChildren().add(btn);
+//        root.getChildren().add(btn);
         pane.setCenter(root);
 
         // Add CSS to elements
