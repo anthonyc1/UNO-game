@@ -1,6 +1,7 @@
 package gui;
 
 import static gui.GameSettingDialog.getGameSettingDialog;
+import java.io.File;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,6 +9,12 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -21,7 +28,7 @@ public class Uno extends Application {
     public void start(Stage primaryStage) {
         // Set up uno gameplay setting
         GameSettingDialog dialog = getGameSettingDialog();
-        
+
         switch (dialog.getSetting()) {
             case 1:
                 Setup.dealCards();
@@ -31,18 +38,30 @@ public class Uno extends Application {
                 initGUI(primaryStage);
                 break;
             case 3:
-                
+
                 break;
             default:
                 break;
         }
 
     }
-    
-    public void initGUI(Stage primaryStage){
+
+    public void initGUI(Stage primaryStage) {
         BorderPane pane = new BorderPane();
         pane.setPrefSize(1000, 800);
         Scene scene = new Scene(pane);
+
+        File file = new File("./images/background1.jpg");
+        Image image = new Image("file:" + file.getPath());
+        //ImageView imageView = new ImageView(image);
+        double height = pane.getHeight();
+        double width = pane.getWidth();
+        BackgroundSize size = new BackgroundSize(width, height, false, false, false, false);
+        BackgroundImage bkgImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, size);
+        Background bkg = new Background(bkgImage);
+
+        pane.setBackground(bkg);
+
         //Load the stylesheet
         scene.getStylesheets().add("css/style.css");
 
@@ -57,27 +76,32 @@ public class Uno extends Application {
 //		pane.setRight(new CustomPane("Right"));
 //		pane.setLeft(new CustomPane("Left"));
         // Event handling
-//        Button btn = new Button();
-//        btn.setText("Play UNO!");
-//        btn.setOnAction(e -> {
-//            
-//        });
-        
-
         StackPane root = new StackPane();
         root.setPrefSize(700, 600);
-//        root.getChildren().add(btn);
+
+        Button btn = new Button();
+        btn.setText("Play UNO!");
+        btn.setOnAction(e -> {
+            root.getChildren().remove(btn);
+            startGame(primaryStage);
+        });
+
+        root.getChildren().add(btn);
         pane.setCenter(root);
 
         // Add CSS to elements
-        pane.getStyleClass().add("field");
+        //pane.getStyleClass().add("field");
         opponent.getStyleClass().add("hand");
         player.getStyleClass().add("hand");
-        root.getStyleClass().add("field");
+        //root.getStyleClass().add("field");
 
         primaryStage.setTitle("UNO");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void startGame(Stage primaryStage) {
+        
     }
 
     public static void main(String[] args) {
