@@ -1,12 +1,20 @@
-.hand {
-	-fx-border-color: gray;
-	-fx-border-width: 2px;
-	
+.border {
+    -fx-border-color: gray;
+    -fx-border-width: 2px;
 }
 
 .field {
-	-fx-background-color: lightgreen;
-	-fx-border-color: brown;
-	-fx-border-width: 2px;
+    -fx-background-color: lightgreen;
+    -fx-border-color: brown;
+    -fx-border-width: 2px;
+}
+
+.calluno {
+    -fx-background-radius: 50px;
+    -fx-background-color: salmon;
+}
+
+.drawcard {
+    -fx-background-radius: 50px;
 }
 

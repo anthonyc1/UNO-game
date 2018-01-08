@@ -5,11 +5,14 @@
  */
 package gui;
 
+import java.io.File;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -42,6 +45,10 @@ public class GameSettingDialog extends Dialog{
         closeButton.managedProperty().bind(closeButton.visibleProperty());
         closeButton.setVisible(false);
         
+        File file = new File("images/uno_cards.jpg");
+        Image image = new Image("file:" + file.getPath());
+        ImageView imageview = new ImageView(image);
+        
         VBox body = new VBox(20);
         body.setPrefWidth(300);
         body.setPrefHeight(200);
@@ -68,12 +75,8 @@ public class GameSettingDialog extends Dialog{
         });
         
         HBox buttonsBar = new HBox(20);
-//        Button ok = new Button("OK");
+        
         Button cancel = new Button("Cancel");
-//        ok.setOnAction(e->{
-//            Stage stage = (Stage) closeButton.getScene().getWindow();
-//            stage.hide();
-//        });
         cancel.setOnAction(e->{
             setting = 0;
             Stage stage = (Stage) closeButton.getScene().getWindow();
@@ -81,7 +84,7 @@ public class GameSettingDialog extends Dialog{
         });
         buttonsBar.getChildren().addAll(cancel);
         
-        body.getChildren().addAll(gameplayDetails, setting1,setting2,setting3, buttonsBar);
+        body.getChildren().addAll(gameplayDetails, imageview, setting1,setting2,setting3, buttonsBar);
         
         BorderPane container = new BorderPane();
         container.setCenter(body);

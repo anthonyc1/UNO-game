@@ -311,6 +311,22 @@ public class Game {
             }
         }
     }
+    
+    public static ArrayList<Card> getPlayerHand() {
+        return player;
+    }
+    
+    public static ArrayList<Card> getComputerHand() {
+        return computer;
+    }
+    
+    public static ArrayList<Card> getDeckHand() {
+        return deck;
+    }
+    
+    public static ArrayList<Card> getDiscardHand() {
+        return discard;
+    }
 
 //    public static void main(String[] args) {
 //
