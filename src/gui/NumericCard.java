@@ -22,24 +22,8 @@ public class NumericCard extends Card {
         this.color = color;
         this.number = number;
         setOnMouseClicked(e -> {
-            Card discard = Workspace.getDiscard();
-            if (Workspace.getTurn().equals("PLAYER")) {
-                if (discard instanceof NumericCard) {
-                    playCard();
-                } else if (discard instanceof PlusOne) {
-                    if (((PlusOne) discard).color.equals(color)) {
-                        playCard();
-                    }
-                } else if (discard instanceof PlusTwo) {
-                    if (((PlusTwo) discard).color.equals(color)) {
-                        playCard();
-                    }
-                } else if (discard instanceof WildCard){
-                    if (((WildCard) discard).color.equals(color)) {
-                        playCard();
-                    }
-                }
-
+            if (Workspace.getTurn().equals("PLAYER") && canPlay()) {
+                playCardByPlayer();
             } else {
                 Workspace.setDialog("Invalid move");
             }
@@ -59,6 +43,30 @@ public class NumericCard extends Card {
      */
     public int getNumber() {
         return number;
+    }
+
+    public boolean canPlay() {
+        Card discard = Workspace.getDiscard();
+        if (discard instanceof NumericCard) {
+            if (((NumericCard) discard).color.equals(color)) {
+                return true;
+            } else if (((NumericCard) discard).number == number){
+                return true;
+            }
+        } else if (discard instanceof PlusOne) {
+            if (((PlusOne) discard).color.equals(color)) {
+                return true;
+            }
+        } else if (discard instanceof PlusTwo) {
+            if (((PlusTwo) discard).color.equals(color)) {
+                return true;
+            }
+        } else if (discard instanceof WildCard) {
+            if (((WildCard) discard).getColor().equals(color)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

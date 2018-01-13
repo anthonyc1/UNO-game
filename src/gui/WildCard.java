@@ -17,12 +17,31 @@ public class WildCard extends Card{
     
     public WildCard(Image image, int height, int width) {
         super(image, height, width);
-        setOnMouseClicked(e->{
-            Card discard = Workspace.getDiscard();
-            if (discard instanceof WildCard){
-                
+        setOnMouseClicked(e -> {
+            if (Workspace.getTurn().equals("PLAYER") && canPlay()) {
+                playCardByPlayer();
+            } else {
+                Workspace.setDialog("Invalid move");
             }
         });
+    }
+    
+    public boolean canPlay() {
+        return true;
+    }
+
+    /**
+     * @return the color
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * @param color the color to set
+     */
+    public void setColor(String color) {
+        this.color = color;
     }
     
 }

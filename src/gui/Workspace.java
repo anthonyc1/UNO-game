@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -50,19 +51,26 @@ public class Workspace {
     Button drawCard;
     Button callUno;
 
-    boolean gameOver = false;
-    String winner;
+    static boolean gameOver = false;
+    static String winner;
 
     HBox opponent;
     HBox player;
-    HBox opponentHand;
-    HBox playerHand;
+    static HBox opponentHand;
+    static HBox playerHand;
     protected static int playerHandSize = 0;
     protected static int opponentHandSize = 0;
 
+    static boolean playerCalledUno;
+    static boolean opponentCalledUno;
+    static boolean playerToDraw;
+    static boolean opponentToDraw;
+
+    static boolean playerPlayed = false;
+
     protected static HBox centerpile;
-    VBox deckpile;
-    protected Label deckName;
+    static VBox deckpile;
+    static protected Label deckName;
 
     VBox info;
     Label playerName;
@@ -74,7 +82,7 @@ public class Workspace {
     File cardback;
 
     Card back;
-    Card deck;
+    static Card deck;
     protected static Card discard;
 
     protected static ArrayList<Card> deckOfCards;
@@ -142,6 +150,8 @@ public class Workspace {
         opponentCards = new ArrayList<>();
         discardedCards = new ArrayList<>();
 
+        back = new BackCard(image, 75, 50);
+
         opponent = new HBox();
         opponent.setMinSize(700, 100);
         opponent.setSpacing(100);
@@ -164,9 +174,71 @@ public class Workspace {
 
         drawCard = new Button("Draw Card");
         drawCard.getStyleClass().add("drawcard");
+        drawCard.setOnMouseClicked(e -> {
+            if (turn.equals("PLAYER")) {
+                playerToDraw = true;
+                for (Node card : playerHand.getChildren()) {
+                    if (((Card) card).canPlay()) {
+                        playerToDraw = false;
+                        break;
+                    }
+                }
+                if (playerToDraw) {
+                    setDialog("PLAYER draws");
+                    playerHand.getChildren().add(getDeckOfCards().remove(0));
+                    playerHandSize++;
+                    setTurn("OPPONENT");
+
+                    if (Workspace.getTurn().equals("OPPONENT")) {
+                        Workspace.opponentToDraw = true;
+                        for (Node card : Workspace.opponentCards) {
+                            if (((Card) card).canPlay()) {
+                                Workspace.opponentToDraw = false;
+                                ((Card) card).playCardByOpponent();
+                                break;
+                            }
+                        }
+                        if (Workspace.opponentToDraw) {
+                            setDialog("OPPONENT draws");
+                            Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
+                            Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
+                            Workspace.opponentHandSize++;
+                        }
+                        Workspace.setTurn("PLAYER");
+                        //Workspace.isGameOver();
+                    }
+
+                } else {
+                    setDialog("Must play card");
+                }
+            }
+//            else {
+//                opponentToDraw = true;
+//                for (Node card : opponentHand.getChildren()) {
+//                    if (((Card) card).canPlay()) {
+//                        opponentToDraw = false;
+//                        ((Card) card).playCard();
+//                        break;
+//                    }
+//                }
+//                if (opponentToDraw) {
+//                    setDialog("OPPONENT draws");
+//                    opponentHand.getChildren().add(getDeckOfCards().remove(0));
+//                    opponentHandSize++;
+//                }
+//            }
+        });
 
         callUno = new Button("Call Uno");
         callUno.getStyleClass().add("calluno");
+        callUno.setOnMouseClicked(e -> {
+            if (playerHandSize == 1) {
+                setDialog("PLAYER calls UNO");
+            } else if (opponentHandSize == 1 && !opponentCalledUno) {
+                setDialog("OPPONENT draws two");
+
+            }
+        });
 
         player.getChildren().addAll(callUno, playerHand, drawCard);
         opponent.getChildren().addAll(opponentHand);
@@ -228,8 +300,8 @@ public class Workspace {
         cardback = new File("resources/back.jpg");
         image = new Image("file:" + cardback.getPath());
 
-        deck = new Card(image, 75, 50);
-        setDiscard(new Card(image, 75, 50));
+        deck = new BackCard(image, 75, 50);
+        setDiscard(new BackCard(image, 75, 50));
 
         getCenterpile().getChildren().addAll(getDiscard());
 
@@ -238,14 +310,13 @@ public class Workspace {
     }
 
     private void startGame() {
-        back = new Card(image, 75, 50);
+
 //        Card back2 = new Card(image, 75, 50);
 //        Card back3 = new Card(image, 75, 50);
 //        Card back4 = new Card(image, 75, 50);
 //        Card back5 = new Card(image, 75, 50);
 //        Card back6 = new Card(image, 75, 50);
 //        Card back7 = new Card(image, 75, 50);
-
 //        Bounds boundsInScene = back.localToScene(back.getBoundsInLocal());
 //
 //        TranslateTransition tt = new TranslateTransition(Duration.millis(700), back);
@@ -260,7 +331,20 @@ public class Workspace {
         Data.shuffleDeck(getDeckOfCards());
 
         getCenterpile().getChildren().clear();
-        setDiscard(getDeckOfCards().remove(0));
+        Card firstCard = getDeckOfCards().remove(0);
+        if (firstCard instanceof WildCard) {
+            int chooseColor = (int) (100 * Math.random());
+            if (chooseColor < 25) {
+                ((WildCard) firstCard).setColor("blue");
+            } else if (chooseColor < 50) {
+                ((WildCard) firstCard).setColor("red");
+            } else if (chooseColor < 75) {
+                ((WildCard) firstCard).setColor("yellow");
+            } else if (chooseColor < 100) {
+                ((WildCard) firstCard).setColor("green");
+            }
+        }
+        setDiscard(firstCard);
         getCenterpile().getChildren().add(getDiscard());
 
         for (int i = 0; i < 10; i++) {
@@ -282,18 +366,30 @@ public class Workspace {
         }
 
         updateDeckText();
-        System.out.print(turn);
+        setDialog(turn + " goes first");
 
         //START GAME
-//        while (!gameOver) {
-//            if (Workspace.getTurn().equals("OPPONENT")) {
-//                
-//            } else {
-//                
-//            }
-//            isGameOver();
-//        }
+//        do {
+        if (Workspace.getTurn().equals("OPPONENT")) {
+            Workspace.opponentToDraw = true;
+            for (Node card : Workspace.opponentCards) {
+                if (((Card) card).canPlay()) {
+                    Workspace.opponentToDraw = false;
+                    ((Card) card).playCardByOpponent();
+                    break;
+                }
+            }
+            if (Workspace.opponentToDraw) {
+                setDialog("OPPONENT draws");
+                Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
+                Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
+                Workspace.opponentHandSize++;
+            }
+            Workspace.setTurn("PLAYER");
+            Workspace.isGameOver();
+        }
 
+//        }while (!gameOver);
     }
 
     public void addCardToHand() {
@@ -317,15 +413,15 @@ public class Workspace {
     /**
      * @return the deckName
      */
-    public Label getDeckName() {
+    public static Label getDeckName() {
         return deckName;
     }
 
     /**
      * @param deckName the deckName to set
      */
-    public void setDeckName(Label deckName) {
-        this.deckName = deckName;
+    public static void setDeckName(Label deckName) {
+        Workspace.deckName = deckName;
     }
 
     /**
@@ -335,14 +431,14 @@ public class Workspace {
         return deckOfCards;
     }
 
-    public void updateDeckText() {
+    public static void updateDeckText() {
         getDeckName().setText("Deck: " + getDeckOfCards().size());
         setDeckName(getDeckName());
         deckpile.getChildren().clear();
         deckpile.getChildren().addAll(deck, getDeckName());
     }
 
-    public void isGameOver() {
+    public static void isGameOver() {
         if (playerHandSize == 0) {
             winner = "PLAYER";
             gameOver = true;
@@ -440,11 +536,18 @@ public class Workspace {
     public static void setDialogText(Label dialogText) {
         Workspace.dialogText = dialogText;
     }
-    
+
     public static void setDialog(String dialogText) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
+        }
         getDialogText().setText(dialogText);
         setDialogText(getDialogText());
-        dialog.getChildren().clear();
+        //if (dialog.getChildren().size() > 2){
+            dialog.getChildren().clear();
+        //}
         dialog.getChildren().add(getDialogText());
     }
 }
