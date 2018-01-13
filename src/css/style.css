@@ -3,6 +3,12 @@
     -fx-border-width: 2px;
 }
 
+.dialog {
+    -fx-background-color: darkslategrey;
+    -fx-border-color: gray;
+    -fx-border-width: 2px;
+}
+
 .field {
     -fx-background-color: lightgreen;
     -fx-border-color: brown;
