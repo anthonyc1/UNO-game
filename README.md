@@ -35,6 +35,7 @@ And presto! You can now run the main file:
 
 ## Screenshot of Game
 <img src="https://github.com/anthonyc1/multiplayerUNO/blob/master/images/gameboard.jpg" height="350px" width="550px">
+
 ----
 
 Copyright © 2017 Anthony Chan. All rights reserved.
