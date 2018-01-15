@@ -9,6 +9,7 @@ import java.io.File;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -25,6 +26,7 @@ import javafx.stage.StageStyle;
  */
 public class GameSettingDialog extends Dialog {
     static GameSettingDialog gameDialog;
+    static TextField name;
 
     private int setting = 0;
 
@@ -59,9 +61,14 @@ public class GameSettingDialog extends Dialog {
         Label gameplayDetails = new Label("UNO Gameplay Settings");
         gameplayDetails.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 //        Button setting1 = new Button("Single Player - Text Version");
+        HBox singleplayer = new HBox(10);
         Button setting1 = new Button("Single Player");
         setting1.setMinWidth(120);
         setting1.setStyle("-fx-background-color: lightgray");
+        name = new TextField();
+        name.setPromptText("your display name");
+        singleplayer.getChildren().addAll(setting1, name);
+        
         Button setting2 = new Button("Multi Player");
         setting2.setMinWidth(120);
         setting2.setStyle("-fx-background-color: lightgray");
@@ -106,7 +113,7 @@ public class GameSettingDialog extends Dialog {
             proceed.setDisable(false);
         });
 
-        body.getChildren().addAll(gameplayDetails, imageview, setting1, setting2, buttonsBar);
+        body.getChildren().addAll(gameplayDetails, imageview, singleplayer, setting2, buttonsBar);
 
         BorderPane container = new BorderPane();
         container.setCenter(body);
@@ -117,6 +124,10 @@ public class GameSettingDialog extends Dialog {
 
     public int getSetting() {
         return setting;
+    }
+    
+    public static String getName(){
+        return name.getText();
     }
 
     public void closeDialog() {

@@ -57,12 +57,12 @@ public class MultiplayerDialog extends Dialog {
         setting1.setOnAction(e -> {
             setting = 1;
             setting1.setStyle("-fx-background-color: lightgreen");
-            setting2.setStyle("-fx-background-color: gray");
+            setting2.setStyle("-fx-background-color: lightgray");
         });
         setting2.setOnAction(e -> {
             setting = 2;
             setting2.setStyle("-fx-background-color: lightgreen");
-            setting1.setStyle("-fx-background-color: gray");
+            setting1.setStyle("-fx-background-color: lightgray");
         });
 
         TextField ip = new TextField();

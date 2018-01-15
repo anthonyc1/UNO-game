@@ -258,8 +258,12 @@ public class Workspace {
         info.setMinSize(100, 400);
         info.setSpacing(30);
         info.setAlignment(Pos.CENTER);
-
-        playerName = new Label("Player");
+        
+        String name = GameSettingDialog.getName();
+        if (name == null)
+            playerName = new Label("Player");
+        else
+            playerName = new Label(name);
         playerName.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         playerName.setTextFill(Color.WHITE);
 
