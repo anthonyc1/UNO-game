@@ -60,8 +60,8 @@ public class Data {
     Card back30;
     Card back31;
     
-
     static Effect highlightedEffect;
+    static Effect highlightedEffect2;
     
     static File blue1card;
     static File green1card;
@@ -144,6 +144,15 @@ public class Data {
         dropShadowEffect.setBlurType(BlurType.GAUSSIAN);
         dropShadowEffect.setRadius(5);
         highlightedEffect = dropShadowEffect;
+        
+        DropShadow dropShadowEffect2 = new DropShadow();
+        dropShadowEffect2.setOffsetX(0.0f);
+        dropShadowEffect2.setOffsetY(0.0f);
+        dropShadowEffect2.setSpread(1.0);
+        dropShadowEffect2.setColor(Color.RED);
+        dropShadowEffect2.setBlurType(BlurType.GAUSSIAN);
+        dropShadowEffect2.setRadius(5);
+        highlightedEffect2 = dropShadowEffect2;
         
         deck = new ArrayList<>();
         discard = new ArrayList<>();
@@ -277,6 +286,10 @@ public class Data {
         return highlightedEffect;
     }
     
+    public static Effect getHighlightedEffect2() {
+        return highlightedEffect2;
+    }
+    
     public static ArrayList<Card> shuffleDeck(ArrayList<Card> s) {
         int size = s.size();
         for (int i = 0; i < size; i++) {
@@ -322,9 +335,7 @@ public class Data {
         back29 = new BackCard(image, 75, 50);
         back30 = new BackCard(image, 75, 50);
         back31 = new BackCard(image, 75, 50);
-        
-        
-        
+
         deckOfCardbacks = new ArrayList<>();
         
         deckOfCardbacks.add(back);
@@ -358,8 +369,6 @@ public class Data {
         deckOfCardbacks.add(back29);
         deckOfCardbacks.add(back30);
         deckOfCardbacks.add(back31);
-        
-
     }
 
     /**

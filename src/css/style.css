@@ -17,11 +17,13 @@
 
 .calluno {
     -fx-background-radius: 50px;
-    -fx-background-color: salmon;
+    -fx-background-color: orangered;
+    -fx-font-weight:bold;
 }
 
 .drawcard {
     -fx-background-radius: 50px;
+    -fx-background-color: lightyellow;
 }
 
 

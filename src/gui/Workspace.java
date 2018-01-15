@@ -223,6 +223,12 @@ public class Workspace {
                 }
             }
         });
+        drawCard.setOnMouseEntered(e -> {
+            drawCard.setEffect(Data.getHighlightedEffect());
+        });
+        drawCard.setOnMouseExited(e -> {
+            drawCard.setEffect(null);
+        });
 
         callUno = new Button("Call Uno");
         callUno.getStyleClass().add("calluno");
@@ -236,6 +242,12 @@ public class Workspace {
             } else {
                 setDialog("Invalid call");
             }
+        });
+        callUno.setOnMouseEntered(e -> {
+            callUno.setEffect(Data.getHighlightedEffect2());
+        });
+        callUno.setOnMouseExited(e -> {
+            callUno.setEffect(null);
         });
 
         player.getChildren().addAll(callUno, playerHand, drawCard);
@@ -332,13 +344,6 @@ public class Workspace {
 
     private void startGame() {
 
-//        Card back2 = new Card(image, 75, 50);
-//        Card back3 = new Card(image, 75, 50);
-//        Card back4 = new Card(image, 75, 50);
-//        Card back5 = new Card(image, 75, 50);
-//        Card back6 = new Card(image, 75, 50);
-//        Card back7 = new Card(image, 75, 50);
-//        Bounds boundsInScene = back.localToScene(back.getBoundsInLocal());
 //
 //        TranslateTransition tt = new TranslateTransition(Duration.millis(700), back);
 //        tt.setByX(boundsInScene.getMaxX());
@@ -488,9 +493,8 @@ public class Workspace {
             if (fiftyfifty >= 50) {
                 setPlayerDialog("Fails to call UNO\nPLAYER draws two");
                 PlusTwo.playerDrawTwo();
-                playerCalledUno = false;
             }
-        } else if (playerHandSize == 1 && playerCalledUno){
+        } else if (playerHandSize == 1 && playerCalledUno) {
             playerCalledUno = false;
         }
         if (opponentHandSize == 1) {
@@ -504,14 +508,10 @@ public class Workspace {
 
     public static void isDeckEmpty() {
         if (deckOfCards.isEmpty()) {
-            //getDiscardedCards().add(Workspace.getDiscard());
             Data.shuffleDeck(discardedCards);
             deckOfCards.addAll(discardedCards);
+            discardedCards.clear();
             updateDeckText();
-
-            //getCenterpile().getChildren().clear();
-            //setDiscard(getDeckOfCards().remove(0));
-            //getCenterpile().getChildren().add(getDiscard());
         }
     }
 

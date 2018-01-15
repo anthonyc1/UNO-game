@@ -101,7 +101,7 @@ public abstract class Card extends ImageView {
             Workspace.setCenterpile(Workspace.getCenterpile());
 
             Workspace.opponentCards.remove(this);
-            Workspace.opponentHand.getChildren().remove(0);
+            Data.getDeckOfCardbacks().add((Card) Workspace.opponentHand.getChildren().remove(0));
 
             Workspace.decrementOpponentHandSize();
             Workspace.setTurn("PLAYER");
