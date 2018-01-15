@@ -8,6 +8,8 @@ package gui;
 import static gui.WildCardDialog.getWildCardDialog;
 import static gui.Workspace.playerHand;
 import static gui.Workspace.setDialog;
+import static gui.Workspace.setOpponentDialog;
+import static gui.Workspace.setPlayerDialog;
 import static gui.Workspace.turn;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +23,7 @@ import javafx.scene.image.ImageView;
  */
 public abstract class Card extends ImageView {
 
-    protected boolean playCard;
+    protected boolean goAgain;
 
     public Card(Image image, int height, int width) {
         setImage(image);
@@ -62,6 +64,7 @@ public abstract class Card extends ImageView {
     public abstract boolean canPlay();
 
     public void playCardByOpponent() {
+        goAgain = false;
         try {
             //        if (this instanceof WildCard) {
 //            String color = getWildCardDialog().getColor();
@@ -83,50 +86,81 @@ public abstract class Card extends ImageView {
             } else if (chooseColor < 100) {
                 ((WildCard) this).setColor("green");
             }
-            Workspace.setDialog("Wild "+ ((WildCard) this).getColor());
-        } else if (this instanceof PlusOne){
+//            Workspace.setDialog("Wild " + ((WildCard) this).getColor());
+        } else if (this instanceof PlusOne) {
             playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
+            Workspace.isDeckEmpty();
             Workspace.playerHandSize++;
-        } else if (this instanceof PlusTwo){
+            Workspace.updateDeckText();
+            goAgain = true;
+        } else if (this instanceof PlusTwo) {
             playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
+            Workspace.isDeckEmpty();
             playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
-            Workspace.playerHandSize+=2;
+            Workspace.isDeckEmpty();
+            Workspace.playerHandSize += 2;
+            Workspace.updateDeckText();
+            goAgain = true;
         }
-//            String color = getWildCardDialog().getColor();
-//            ((WildCard) this).setColor(color);
         // add current discard card to list of discarded cards
-        Workspace.getDiscardedCards().add(Workspace.getDiscard());
-        // update the discard card in scene to newly played card
-        Workspace.setDiscard(this);
-        Workspace.getCenterpile().getChildren().clear();
-        Workspace.getCenterpile().getChildren().add(this);
-        Workspace.setCenterpile(Workspace.getCenterpile());
+            Workspace.getDiscardedCards().add(Workspace.getDiscard());
+            // update the discard card in scene to newly played card
+            Workspace.setDiscard(this);
+            Workspace.getCenterpile().getChildren().clear();
+            Workspace.getCenterpile().getChildren().add(Workspace.getDiscard());
+            Workspace.setCenterpile(Workspace.getCenterpile());
 
-        Workspace.setTurn("PLAYER");
-        Workspace.decrementOpponentHandSize();
-        setDialog(turn + "'s turn");
-        //Workspace.isGameOver();
+            Workspace.opponentCards.remove(this);
+            Workspace.opponentHand.getChildren().remove(0);
+
+            Workspace.decrementOpponentHandSize();
+            Workspace.setTurn("PLAYER");
+            setOpponentDialog("LAST PLAYED:\n" + this.toString());
+            setDialog(turn + "'s turn");
+            Workspace.isGameOver(Workspace.getPrimaryStage());
+            
+        if (goAgain) {
+            Workspace.setTurn("OPPONENT");
+            setDialog(turn + " goes again");
+            opponentPlayLogic();
+        }
     }
 
     public void playCardByPlayer() {
+        goAgain = false;
         if (this instanceof WildCard) {
             String color = getWildCardDialog().getColor();
             ((WildCard) this).setColor(color);
+        }else if (this instanceof PlusOne) {
+            goAgain = true;
+        } else if (this instanceof PlusTwo) {
+            goAgain = true;
         }
         // add current discard card to list of discarded cards
         Workspace.getDiscardedCards().add(Workspace.getDiscard());
         // update the discard card in scene to newly played card
         Workspace.setDiscard(this);
         Workspace.getCenterpile().getChildren().clear();
-        Workspace.getCenterpile().getChildren().add(this);
+        Workspace.getCenterpile().getChildren().add(Workspace.getDiscard());
         Workspace.setCenterpile(Workspace.getCenterpile());
 
-        Workspace.setTurn("OPPONENT");
         Workspace.decrementPlayerHandSize();
+        Workspace.setTurn("OPPONENT");
+        setPlayerDialog("LAST PLAYED:\n" + this.toString());
         setDialog(turn + "'s turn");
         System.out.println("player plays");
-        //Workspace.isGameOver();
+        Workspace.isGameOver(Workspace.getPrimaryStage());
+        
+        if (!goAgain){
+            opponentPlayLogic();
+        } else {
+            Workspace.setTurn("PLAYER");
+            setDialog(turn + " goes again");
+        }
 
+    }
+    
+    public void opponentPlayLogic(){
         if (Workspace.getTurn().equals("OPPONENT")) {
             Workspace.opponentToDraw = true;
             for (Node card : Workspace.opponentCards) {
@@ -137,13 +171,16 @@ public abstract class Card extends ImageView {
                 }
             }
             if (Workspace.opponentToDraw) {
-                setDialog("OPPONENT draws");
+                setOpponentDialog("OPPONENT draws");
                 Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
                 Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
                 Workspace.opponentHandSize++;
+                Workspace.updateDeckText();
             }
+            
             Workspace.setTurn("PLAYER");
-            //Workspace.isGameOver();
+            setDialog(turn +"'s turn");
+            Workspace.isDeckEmpty();
         }
     }
 

@@ -25,8 +25,11 @@ public class PlusTwo extends Card {
                 opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
                 opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
                 opponentCards.add(Workspace.getDeckOfCards().remove(0));
+                Workspace.isDeckEmpty();
                 opponentCards.add(Workspace.getDeckOfCards().remove(0));
+                Workspace.isDeckEmpty();
                 Workspace.opponentHandSize+=2;
+                Workspace.updateDeckText();
                 playCardByPlayer();
 
             } else {
@@ -49,6 +52,11 @@ public class PlusTwo extends Card {
             }
         }
         return false;
+    }
+    
+    @Override
+    public String toString(){
+        return color + " plus two";
     }
 
 }

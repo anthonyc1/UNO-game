@@ -129,7 +129,10 @@ public class Data {
     static Card blue1plus;
     static Card green2plus;
     static Card yellow2plus;
-    static Card wild;
+    static Card wild1;
+    static Card wild2;
+    static Card wild3;
+    static Card wild4;
             
 
     public Data() {
@@ -213,7 +216,10 @@ public class Data {
         red1plus = new PlusOne(new Image("file:" + red1pluscard.getPath()), 75, 50, "red");
         green2plus = new PlusTwo(new Image("file:" + green2pluscard.getPath()), 75, 50, "green");
         yellow2plus = new PlusTwo(new Image("file:" + yellow2pluscard.getPath()), 75, 50, "yellow");
-        wild = new WildCard(new Image("file:" + wildcard.getPath()), 75, 50);
+        wild1 = new WildCard(new Image("file:" + wildcard.getPath()), 75, 50);
+        wild2 = new WildCard(new Image("file:" + wildcard.getPath()), 75, 50);
+        wild3 = new WildCard(new Image("file:" + wildcard.getPath()), 75, 50);
+        wild4 = new WildCard(new Image("file:" + wildcard.getPath()), 75, 50);
         
         deck.add(blue1);
         deck.add(green1);
@@ -247,10 +253,10 @@ public class Data {
         deck.add(green2plus);
         deck.add(red1plus);
         deck.add(yellow2plus);
-        deck.add(wild);
-        deck.add(wild);
-        deck.add(wild);
-        deck.add(wild);
+        deck.add(wild1);
+        deck.add(wild2);
+        deck.add(wild3);
+        deck.add(wild4);
         
         setupCardbacks();
     }

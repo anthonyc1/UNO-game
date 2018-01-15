@@ -52,9 +52,17 @@ public class WildCardDialog extends Dialog {
         wildcardDetails.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         
         Button red = new Button("Red");
+        red.setMinWidth(100);
+        red.setStyle("-fx-background-color: red");
         Button blue = new Button("Blue");
+        blue.setMinWidth(100);
+        blue.setStyle("-fx-background-color: lightblue");
         Button green = new Button("Green");
+        green.setMinWidth(100);
+        green.setStyle("-fx-background-color: lightgreen");
         Button yellow = new Button("Yellow");
+        yellow.setMinWidth(100);
+        yellow.setStyle("-fx-background-color: yellow");
         
         red.setOnAction(e -> {
             color = "red";

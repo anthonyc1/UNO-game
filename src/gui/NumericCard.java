@@ -68,5 +68,10 @@ public class NumericCard extends Card {
         }
         return false;
     }
+    
+    @Override
+    public String toString(){
+        return color + " " + number;
+    }
 
 }

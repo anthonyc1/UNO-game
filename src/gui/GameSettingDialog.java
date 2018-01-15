@@ -24,81 +24,101 @@ import javafx.stage.Stage;
  *
  * @author anthonychan
  */
-public class GameSettingDialog extends Dialog{
+public class GameSettingDialog extends Dialog {
+
     private int setting = 0;
-    
-    private GameSettingDialog(){
+
+    private GameSettingDialog() {
         init();
     }
-    
-    public static GameSettingDialog getGameSettingDialog(){
+
+    public static GameSettingDialog getGameSettingDialog() {
         GameSettingDialog dialog = new GameSettingDialog();
         return dialog;
     }
-    
-    public void init(){
+
+    public void init() {
         Dialog dialog = new Dialog();
         dialog.setTitle("Select UNO Gameplay");
-        
+
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
         closeButton.managedProperty().bind(closeButton.visibleProperty());
         closeButton.setVisible(false);
-        
+
         File file = new File("images/uno_cards.jpg");
         Image image = new Image("file:" + file.getPath());
         ImageView imageview = new ImageView(image);
-        
+        imageview.setFitHeight(120);
+        imageview.setFitWidth(120);
+
         VBox body = new VBox(20);
         body.setPrefWidth(300);
         body.setPrefHeight(200);
         Label gameplayDetails = new Label("UNO Gameplay Settings");
         gameplayDetails.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        Button setting1 = new Button("Single Player - Text Version");
-        Button setting2 = new Button("Single Player - GUI Version");
-        Button setting3 = new Button("Multi Player");
-        
-        setting1.setOnAction(e -> {
-            setting = 1;
-            Stage stage = (Stage) setting1.getScene().getWindow();
-            stage.hide();
-        });
-        setting2.setOnAction(e -> {
-            setting = 2;
-            Stage stage = (Stage) closeButton.getScene().getWindow();
-            stage.hide();
-        });
-        setting3.setOnAction(e -> {
-            setting = 3;
-            Stage stage = (Stage) closeButton.getScene().getWindow();
-            stage.hide();
-        });
-        
+//        Button setting1 = new Button("Single Player - Text Version");
+        Button setting1 = new Button("Single Player");
+        setting1.setMinWidth(120);
+        setting1.setStyle("-fx-background-color: lightgray");
+        Button setting2 = new Button("Multi Player");
+        setting2.setMinWidth(120);
+        setting2.setStyle("-fx-background-color: lightgray");
+
+//        setting3.setOnAction(e -> {
+//            setting = 3;
+//            Stage stage = (Stage) closeButton.getScene().getWindow();
+//            stage.hide();
+//        });
         HBox buttonsBar = new HBox(20);
-        
-        Button cancel = new Button("Cancel");
-        cancel.setOnAction(e->{
+
+        Button quit = new Button("Quit");
+        quit.setStyle("-fx-background-color: red");
+        quit.setMinWidth(75);
+        quit.setOnAction(e -> {
             setting = 0;
             Stage stage = (Stage) closeButton.getScene().getWindow();
             stage.hide();
         });
-        buttonsBar.getChildren().addAll(cancel);
         
-        body.getChildren().addAll(gameplayDetails, imageview, setting1,setting2,setting3, buttonsBar);
-        
+        Button proceed = new Button("Continue");
+        proceed.setStyle("-fx-background-color: lightblue");
+        proceed.setMinWidth(75);
+        proceed.setDisable(true);
+        proceed.setOnAction(e -> {
+            Stage stage = (Stage) closeButton.getScene().getWindow();
+            stage.hide();
+        });
+        buttonsBar.getChildren().addAll(proceed, quit);
+
+        setting1.setOnAction(e -> {
+            setting = 1;
+            setting1.setStyle("-fx-background-color: lightgreen");
+            setting2.setStyle("-fx-background-color: lightgray");
+            proceed.setDisable(false);
+        });
+        setting2.setOnAction(e -> {
+            setting = 2;
+            setting1.setStyle("-fx-background-color: lightgray");
+            setting2.setStyle("-fx-background-color: lightgreen");
+            proceed.setDisable(false);
+        });
+
+        body.getChildren().addAll(gameplayDetails, imageview, setting1, setting2, buttonsBar);
+
         BorderPane container = new BorderPane();
         container.setCenter(body);
-        
+
         dialog.getDialogPane().setContent(container);
         dialog.showAndWait();
     }
-    
-    public int getSetting(){
+
+    public int getSetting() {
         return setting;
     }
-    
-    public void closeDialog(){
+
+    public void closeDialog() {
         this.close();
     }
-    
+
 }

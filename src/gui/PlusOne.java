@@ -25,7 +25,9 @@ public class PlusOne extends Card {
             if (Workspace.getTurn().equals("PLAYER") && canPlay()) {
                 opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
                 opponentCards.add(Workspace.getDeckOfCards().remove(0));
+                Workspace.isDeckEmpty();
                 Workspace.opponentHandSize++;
+                Workspace.updateDeckText();
                 playCardByPlayer();
             } else {
                 Workspace.setDialog("Invalid move");
@@ -48,6 +50,11 @@ public class PlusOne extends Card {
             }
         }
         return false;
+    }
+    
+    @Override
+    public String toString(){
+        return color + " plus one";
     }
 
 }

@@ -44,4 +44,9 @@ public class WildCard extends Card{
         this.color = color;
     }
     
+    @Override
+    public String toString(){
+        return color + " wild";
+    }
+    
 }

@@ -3,6 +3,7 @@ package gui;
 import static gui.GameSettingDialog.getGameSettingDialog;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import static tcp.MultiplayerDialog.getMultiplayerDialog;
 import uno.Game;
 import uno.Setup;
 
@@ -18,15 +19,11 @@ public class Uno extends Application {
 
         switch (dialog.getSetting()) {
             case 1:
-                Setup.dealCards();
-                Game.gamePlay();
-                break;
-            case 2:
                 workspace = new Workspace(primaryStage);
                 //startGame(primaryStage);
                 break;
-            case 3:
-
+            case 2:
+                getMultiplayerDialog();
                 break;
             default:
                 break;

@@ -5,6 +5,7 @@
  */
 package gui;
 
+import static gui.GameResultDialog.getGameResultDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -43,6 +44,7 @@ import javafx.util.Duration;
 public class Workspace {
 
     Data dataManager;
+    static protected Stage primaryStage;
 
     BorderPane canvas;
     StackPane root;
@@ -58,8 +60,8 @@ public class Workspace {
     HBox player;
     static HBox opponentHand;
     static HBox playerHand;
-    protected static int playerHandSize = 0;
-    protected static int opponentHandSize = 0;
+    protected static int playerHandSize;
+    protected static int opponentHandSize;
 
     static boolean playerCalledUno;
     static boolean opponentCalledUno;
@@ -77,7 +79,11 @@ public class Workspace {
     Label computerName;
 
     static VBox dialog;
+    protected static VBox playerDialog;
+    protected static VBox opponentDialog;
     protected static Label dialogText;
+    protected static Label playerDialogText;
+    protected static Label opponentDialogText;
 
     File cardback;
 
@@ -101,6 +107,8 @@ public class Workspace {
     }
 
     public void initGUI(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        
         canvas = new BorderPane();
         canvas.setMinSize(1000, 600);
         scene = new Scene(canvas);
@@ -115,13 +123,10 @@ public class Workspace {
         Background bkg = new Background(bkgImage);
 
         canvas.setBackground(bkg);
-        //pane.setStyle("-fx-background-color: #" + 333333);
 
         //Load the stylesheet
         scene.getStylesheets().add("css/style.css");
 
-//		pane.setRight(new CustomPane("Right"));
-//		pane.setLeft(new CustomPane("Left"));
         // Event handling
         root = new StackPane();
         root.setMinSize(700, 300);
@@ -149,6 +154,9 @@ public class Workspace {
         deckOfCards = Data.getDeck();
         opponentCards = new ArrayList<>();
         discardedCards = new ArrayList<>();
+        
+        playerHandSize = 0;
+        opponentHandSize = 0;
 
         back = new BackCard(image, 75, 50);
 
@@ -184,10 +192,15 @@ public class Workspace {
                     }
                 }
                 if (playerToDraw) {
-                    setDialog("PLAYER draws");
+                    setPlayerDialog("PLAYER draws");
+                    setDialog("OPPONENT goes");
                     playerHand.getChildren().add(getDeckOfCards().remove(0));
                     playerHandSize++;
+                    updateDeckText();
+                    Workspace.isDeckEmpty();
+
                     setTurn("OPPONENT");
+                    setDialog(turn+ "'s turn");
 
                     if (Workspace.getTurn().equals("OPPONENT")) {
                         Workspace.opponentToDraw = true;
@@ -199,13 +212,15 @@ public class Workspace {
                             }
                         }
                         if (Workspace.opponentToDraw) {
-                            setDialog("OPPONENT draws");
+                            setOpponentDialog("OPPONENT draws");
                             Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
                             Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
                             Workspace.opponentHandSize++;
+                            updateDeckText();
                         }
                         Workspace.setTurn("PLAYER");
-                        //Workspace.isGameOver();
+                        setDialog(turn +"'s turn");
+                        Workspace.isDeckEmpty();
                     }
 
                 } else {
@@ -257,8 +272,8 @@ public class Workspace {
         getDeckName().setTextFill(Color.WHITE);
 
         info = new VBox();
-        info.setMinSize(100, 300);
-        info.setSpacing(60);
+        info.setMinSize(100, 400);
+        info.setSpacing(30);
         info.setAlignment(Pos.CENTER);
 
         playerName = new Label("Player");
@@ -270,17 +285,35 @@ public class Workspace {
         computerName.setTextFill(Color.WHITE);
 
         dialog = new VBox();
-        dialog.setMinSize(100, 200);
+        dialog.setMinSize(100, 60);
         dialog.setAlignment(Pos.CENTER);
         setDialogText(new Label("Let's play!"));
-        getDialogText().setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        getDialogText().setTextFill(Color.WHITE);
+        getDialogText().setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        getDialogText().setTextFill(Color.YELLOW);
+        
+        playerDialog = new VBox();
+        playerDialog.setMinSize(100, 60);
+        playerDialog.setAlignment(Pos.CENTER);
+        setPlayerDialogText(new Label("Let's play!"));
+        getPlayerDialogText().setFont(Font.font("Arial", 12));
+        getPlayerDialogText().setTextFill(Color.WHITE);
+        
+        opponentDialog = new VBox();
+        opponentDialog.setMinSize(100, 60);
+        opponentDialog.setAlignment(Pos.CENTER);
+        setOpponentDialogText(new Label("Let's play!"));
+        getOpponentDialogText().setFont(Font.font("Arial", 12));
+        getOpponentDialogText().setTextFill(Color.WHITE);
 
         dialog.getChildren().add(getDialogText());
+        playerDialog.getChildren().add(getPlayerDialogText());
+        opponentDialog.getChildren().add(getOpponentDialogText());
         dialog.getStyleClass().add("dialog");
+        playerDialog.getStyleClass().add("dialog");
+        opponentDialog.getStyleClass().add("dialog");
 
         //callUno.setOnAction(e -> {computerName.setText("Hi");});
-        info.getChildren().addAll(computerName, dialog, playerName);
+        info.getChildren().addAll(computerName, opponentDialog, dialog, playerDialog, playerName);
 
         pane.setTop(opponent);
         pane.setBottom(player);
@@ -386,14 +419,8 @@ public class Workspace {
                 Workspace.opponentHandSize++;
             }
             Workspace.setTurn("PLAYER");
-            Workspace.isGameOver();
+
         }
-
-//        }while (!gameOver);
-    }
-
-    public void addCardToHand() {
-
     }
 
     /**
@@ -438,25 +465,35 @@ public class Workspace {
         deckpile.getChildren().addAll(deck, getDeckName());
     }
 
-    public static void isGameOver() {
+    public static void isGameOver(Stage primaryStage) {
         if (playerHandSize == 0) {
             winner = "PLAYER";
             gameOver = true;
+            getGameResultDialog(primaryStage, winner);
         } else if (opponentHandSize == 0) {
             winner = "OPPONENT";
             gameOver = true;
+            getGameResultDialog(primaryStage, winner);
         } else {
-            if (deckOfCards.isEmpty()) {
-                getDiscardedCards().add(Workspace.getDiscard());
-                Data.shuffleDeck(discardedCards);
-                deckOfCards = discardedCards;
-                updateDeckText();
-
-                getCenterpile().getChildren().clear();
-                //setDiscard(getDeckOfCards().remove(0));
-                //getCenterpile().getChildren().add(getDiscard());
-            }
             gameOver = false;
+        }
+    }
+    
+    // determine if you need to call uno
+    public static void callUNO(){
+        
+    }
+
+    public static void isDeckEmpty() {
+        if (deckOfCards.isEmpty()) {
+            //getDiscardedCards().add(Workspace.getDiscard());
+            Data.shuffleDeck(discardedCards);
+            deckOfCards = discardedCards;
+            updateDeckText();
+
+            //getCenterpile().getChildren().clear();
+            //setDiscard(getDeckOfCards().remove(0));
+            //getCenterpile().getChildren().add(getDiscard());
         }
     }
 
@@ -538,16 +575,65 @@ public class Workspace {
     }
 
     public static void setDialog(String dialogText) {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
-        }
         getDialogText().setText(dialogText);
         setDialogText(getDialogText());
-        //if (dialog.getChildren().size() > 2){
-            dialog.getChildren().clear();
-        //}
+        dialog.getChildren().clear();
         dialog.getChildren().add(getDialogText());
     }
+
+    /**
+     * @param aPlayerDialog the playerDialog to set
+     */
+    public static void setPlayerDialog(String dialogText) {
+        getPlayerDialogText().setText(dialogText);
+        setPlayerDialogText(getPlayerDialogText());
+        playerDialog.getChildren().clear();
+        playerDialog.getChildren().add(getPlayerDialogText());
+    }
+
+    /**
+     * @param aOpponentDialog the opponentDialog to set
+     */
+    public static void setOpponentDialog(String dialogText) {
+        getOpponentDialogText().setText(dialogText);
+        setOpponentDialogText(getOpponentDialogText());
+        opponentDialog.getChildren().clear();
+        opponentDialog.getChildren().add(getOpponentDialogText());
+    }
+
+    /**
+     * @return the primaryStage
+     */
+    public static Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    /**
+     * @return the playerDialogText
+     */
+    public static Label getPlayerDialogText() {
+        return playerDialogText;
+    }
+
+    /**
+     * @param aPlayerDialogText the playerDialogText to set
+     */
+    public static void setPlayerDialogText(Label aPlayerDialogText) {
+        playerDialogText = aPlayerDialogText;
+    }
+
+    /**
+     * @return the opponentDialogText
+     */
+    public static Label getOpponentDialogText() {
+        return opponentDialogText;
+    }
+
+    /**
+     * @param aOpponentDialogText the opponentDialogText to set
+     */
+    public static void setOpponentDialogText(Label aOpponentDialogText) {
+        opponentDialogText = aOpponentDialogText;
+    }
+
 }
