@@ -4,8 +4,6 @@ import static gui.GameSettingDialog.getGameSettingDialog;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import static tcp.MultiplayerDialog.getMultiplayerDialog;
-import uno.Game;
-import uno.Setup;
 
 public class Uno extends Application {
     Workspace workspace;

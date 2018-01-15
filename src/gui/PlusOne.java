@@ -7,7 +7,6 @@ package gui;
 
 import static gui.Workspace.opponentCards;
 import static gui.Workspace.opponentHand;
-import static gui.Workspace.playerHand;
 import javafx.scene.image.Image;
 
 /**
@@ -36,6 +35,7 @@ public class PlusOne extends Card {
         });
     }
 
+    @Override
     public boolean canPlay() {
         Card discard = Workspace.getDiscard();
         if (discard instanceof PlusOne) {

@@ -118,6 +118,7 @@ public abstract class Card extends ImageView {
             setOpponentDialog("LAST PLAYED:\n" + this.toString());
             setDialog(turn + "'s turn");
             Workspace.isGameOver(Workspace.getPrimaryStage());
+            Workspace.callUNO();
             
         if (goAgain) {
             Workspace.setTurn("OPPONENT");
@@ -150,6 +151,7 @@ public abstract class Card extends ImageView {
         setDialog(turn + "'s turn");
         System.out.println("player plays");
         Workspace.isGameOver(Workspace.getPrimaryStage());
+        Workspace.callUNO();
         
         if (!goAgain){
             opponentPlayLogic();

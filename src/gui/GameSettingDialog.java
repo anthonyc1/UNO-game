@@ -6,9 +6,7 @@
 package gui;
 
 import java.io.File;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -19,12 +17,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author anthonychan
  */
 public class GameSettingDialog extends Dialog {
+    static GameSettingDialog gameDialog;
 
     private int setting = 0;
 
@@ -33,18 +33,19 @@ public class GameSettingDialog extends Dialog {
     }
 
     public static GameSettingDialog getGameSettingDialog() {
-        GameSettingDialog dialog = new GameSettingDialog();
-        return dialog;
+        gameDialog = new GameSettingDialog();
+        return gameDialog;
     }
 
-    public void init() {
+    private void init() {
         Dialog dialog = new Dialog();
         dialog.setTitle("Select UNO Gameplay");
+        dialog.initStyle(StageStyle.UNDECORATED);
 
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
-        closeButton.managedProperty().bind(closeButton.visibleProperty());
-        closeButton.setVisible(false);
+//        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+//        Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
+//        closeButton.managedProperty().bind(closeButton.visibleProperty());
+//        closeButton.setVisible(false);
 
         File file = new File("images/uno_cards.jpg");
         Image image = new Image("file:" + file.getPath());
@@ -77,8 +78,9 @@ public class GameSettingDialog extends Dialog {
         quit.setMinWidth(75);
         quit.setOnAction(e -> {
             setting = 0;
-            Stage stage = (Stage) closeButton.getScene().getWindow();
+            Stage stage = (Stage) quit.getScene().getWindow();
             stage.hide();
+            System.exit(0);
         });
         
         Button proceed = new Button("Continue");
@@ -86,7 +88,7 @@ public class GameSettingDialog extends Dialog {
         proceed.setMinWidth(75);
         proceed.setDisable(true);
         proceed.setOnAction(e -> {
-            Stage stage = (Stage) closeButton.getScene().getWindow();
+            Stage stage = (Stage) proceed.getScene().getWindow();
             stage.hide();
         });
         buttonsBar.getChildren().addAll(proceed, quit);

@@ -6,15 +6,12 @@
 package gui;
 
 import static gui.GameSettingDialog.getGameSettingDialog;
-import java.io.File;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -40,7 +37,7 @@ public class GameResultDialog extends Dialog {
         return dialog;
     }
 
-    public void init(Stage primaryStage, String winner) {
+    private void init(Stage primaryStage, String winner) {
         Dialog dialog = new Dialog();
         dialog.setTitle("UNO Game Result");
 

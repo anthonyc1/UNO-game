@@ -288,7 +288,7 @@ public class Data {
         return s;
     }
     
-    public void setupCardbacks(){
+    private void setupCardbacks(){
         cardback = new File("resources/back.jpg");
         image = new Image("file:" + cardback.getPath());
         back = new BackCard(image, 75, 50);

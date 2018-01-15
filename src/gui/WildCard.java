@@ -26,6 +26,7 @@ public class WildCard extends Card{
         });
     }
     
+    @Override
     public boolean canPlay() {
         return true;
     }

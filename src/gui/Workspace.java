@@ -11,17 +11,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
-import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -63,8 +58,8 @@ public class Workspace {
     protected static int playerHandSize;
     protected static int opponentHandSize;
 
-    static boolean playerCalledUno;
-    static boolean opponentCalledUno;
+    static boolean playerCalledUno = false;
+    static boolean opponentCalledUno = false;
     static boolean playerToDraw;
     static boolean opponentToDraw;
 
@@ -106,9 +101,9 @@ public class Workspace {
         initGUI(primaryStage);
     }
 
-    public void initGUI(Stage primaryStage) {
+    private void initGUI(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        
+
         canvas = new BorderPane();
         canvas.setMinSize(1000, 600);
         scene = new Scene(canvas);
@@ -154,7 +149,7 @@ public class Workspace {
         deckOfCards = Data.getDeck();
         opponentCards = new ArrayList<>();
         discardedCards = new ArrayList<>();
-        
+
         playerHandSize = 0;
         opponentHandSize = 0;
 
@@ -200,7 +195,7 @@ public class Workspace {
                     Workspace.isDeckEmpty();
 
                     setTurn("OPPONENT");
-                    setDialog(turn+ "'s turn");
+                    setDialog(turn + "'s turn");
 
                     if (Workspace.getTurn().equals("OPPONENT")) {
                         Workspace.opponentToDraw = true;
@@ -219,7 +214,7 @@ public class Workspace {
                             updateDeckText();
                         }
                         Workspace.setTurn("PLAYER");
-                        setDialog(turn +"'s turn");
+                        setDialog(turn + "'s turn");
                         Workspace.isDeckEmpty();
                     }
 
@@ -227,31 +222,19 @@ public class Workspace {
                     setDialog("Must play card");
                 }
             }
-//            else {
-//                opponentToDraw = true;
-//                for (Node card : opponentHand.getChildren()) {
-//                    if (((Card) card).canPlay()) {
-//                        opponentToDraw = false;
-//                        ((Card) card).playCard();
-//                        break;
-//                    }
-//                }
-//                if (opponentToDraw) {
-//                    setDialog("OPPONENT draws");
-//                    opponentHand.getChildren().add(getDeckOfCards().remove(0));
-//                    opponentHandSize++;
-//                }
-//            }
         });
 
         callUno = new Button("Call Uno");
         callUno.getStyleClass().add("calluno");
         callUno.setOnMouseClicked(e -> {
-            if (playerHandSize == 1) {
-                setDialog("PLAYER calls UNO");
+            if (playerHandSize == 2 && !playerToDraw()) {
+                setPlayerDialog("PLAYER calls UNO");
+                playerCalledUno = true;
             } else if (opponentHandSize == 1 && !opponentCalledUno) {
-                setDialog("OPPONENT draws two");
-
+                setOpponentDialog("Fails to call UNO\nOPPONENT draws two");
+                PlusTwo.opponentDrawTwo();
+            } else {
+                setDialog("Invalid call");
             }
         });
 
@@ -290,14 +273,14 @@ public class Workspace {
         setDialogText(new Label("Let's play!"));
         getDialogText().setFont(Font.font("Arial", FontWeight.BOLD, 14));
         getDialogText().setTextFill(Color.YELLOW);
-        
+
         playerDialog = new VBox();
         playerDialog.setMinSize(100, 60);
         playerDialog.setAlignment(Pos.CENTER);
         setPlayerDialogText(new Label("Let's play!"));
         getPlayerDialogText().setFont(Font.font("Arial", 12));
         getPlayerDialogText().setTextFill(Color.WHITE);
-        
+
         opponentDialog = new VBox();
         opponentDialog.setMinSize(100, 60);
         opponentDialog.setAlignment(Pos.CENTER);
@@ -376,6 +359,7 @@ public class Workspace {
             } else if (chooseColor < 100) {
                 ((WildCard) firstCard).setColor("green");
             }
+            setDialog("First card is\n" + ((WildCard) firstCard).toString());
         }
         setDiscard(firstCard);
         getCenterpile().getChildren().add(getDiscard());
@@ -394,12 +378,13 @@ public class Workspace {
         int chooseRandom = (int) (100 * Math.random());
         if (chooseRandom % 2 == 0) {
             setTurn("PLAYER");
+            setPlayerDialog(turn + " goes first");
         } else {
             setTurn("OPPONENT");
+            setOpponentDialog(turn + " goes first");
         }
 
         updateDeckText();
-        setDialog(turn + " goes first");
 
         //START GAME
 //        do {
@@ -413,7 +398,7 @@ public class Workspace {
                 }
             }
             if (Workspace.opponentToDraw) {
-                setDialog("OPPONENT draws");
+                setOpponentDialog("OPPONENT draws");
                 Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
                 Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
                 Workspace.opponentHandSize++;
@@ -478,17 +463,42 @@ public class Workspace {
             gameOver = false;
         }
     }
-    
+
+    public boolean playerToDraw() {
+        playerToDraw = true;
+        for (Node card : playerHand.getChildren()) {
+            if (((Card) card).canPlay()) {
+                playerToDraw = false;
+                break;
+            }
+        }
+        return playerToDraw;
+    }
+
     // determine if you need to call uno
-    public static void callUNO(){
-        
+    public static void callUNO() {
+        int fiftyfifty = (int) (100 * Math.random());
+        if (fiftyfifty >= 50) {
+            if (turn.equals("PLAYER") && playerHandSize == 1 && playerCalledUno) {
+                setPlayerDialog("Fails to call UNO\nPLAYER draws two");
+                PlusTwo.playerDrawTwo();
+                playerCalledUno = false;
+            }
+        }
+        if (turn.equals("OPPONENT") && opponentHandSize == 2) {
+            if (fiftyfifty < 50) {
+                opponentCalledUno = true;
+                setOpponentDialog("OPPONENT calls UNO");
+            }
+
+        }
     }
 
     public static void isDeckEmpty() {
         if (deckOfCards.isEmpty()) {
             //getDiscardedCards().add(Workspace.getDiscard());
             Data.shuffleDeck(discardedCards);
-            deckOfCards = discardedCards;
+            deckOfCards.addAll(discardedCards);
             updateDeckText();
 
             //getCenterpile().getChildren().clear();
@@ -538,17 +548,12 @@ public class Workspace {
     public static void setOpponentCards(ArrayList<Card> aOpponentCards) {
         opponentCards = aOpponentCards;
     }
-
-    /**
-     * @return the playerHandSize
-     */
+    
     public static void decrementPlayerHandSize() {
         playerHandSize--;
     }
 
-    /**
-     * @return the opponentHandSize
-     */
+    
     public static void decrementOpponentHandSize() {
         opponentHandSize--;
     }
@@ -581,9 +586,6 @@ public class Workspace {
         dialog.getChildren().add(getDialogText());
     }
 
-    /**
-     * @param aPlayerDialog the playerDialog to set
-     */
     public static void setPlayerDialog(String dialogText) {
         getPlayerDialogText().setText(dialogText);
         setPlayerDialogText(getPlayerDialogText());
@@ -591,9 +593,6 @@ public class Workspace {
         playerDialog.getChildren().add(getPlayerDialogText());
     }
 
-    /**
-     * @param aOpponentDialog the opponentDialog to set
-     */
     public static void setOpponentDialog(String dialogText) {
         getOpponentDialogText().setText(dialogText);
         setOpponentDialogText(getOpponentDialogText());

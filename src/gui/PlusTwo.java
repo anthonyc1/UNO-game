@@ -7,6 +7,7 @@ package gui;
 
 import static gui.Workspace.opponentCards;
 import static gui.Workspace.opponentHand;
+import static gui.Workspace.playerHand;
 import javafx.scene.image.Image;
 
 /**
@@ -22,14 +23,7 @@ public class PlusTwo extends Card {
         this.color = color;
         setOnMouseClicked(e -> {
             if (Workspace.getTurn().equals("PLAYER") && canPlay()) {
-                opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
-                opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
-                opponentCards.add(Workspace.getDeckOfCards().remove(0));
-                Workspace.isDeckEmpty();
-                opponentCards.add(Workspace.getDeckOfCards().remove(0));
-                Workspace.isDeckEmpty();
-                Workspace.opponentHandSize+=2;
-                Workspace.updateDeckText();
+                opponentDrawTwo();
                 playCardByPlayer();
 
             } else {
@@ -38,6 +32,7 @@ public class PlusTwo extends Card {
         });
     }
 
+    @Override
     public boolean canPlay() {
         Card discard = Workspace.getDiscard();
         if (discard instanceof PlusTwo) {
@@ -53,9 +48,29 @@ public class PlusTwo extends Card {
         }
         return false;
     }
+
+    public static void opponentDrawTwo() {
+        opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
+        opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
+        opponentCards.add(Workspace.getDeckOfCards().remove(0));
+        Workspace.isDeckEmpty();
+        opponentCards.add(Workspace.getDeckOfCards().remove(0));
+        Workspace.isDeckEmpty();
+        Workspace.opponentHandSize += 2;
+        Workspace.updateDeckText();
+    }
     
+    public static void playerDrawTwo() {
+        playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
+        Workspace.isDeckEmpty();
+        playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
+        Workspace.isDeckEmpty();
+        Workspace.playerHandSize += 2;
+        Workspace.updateDeckText();
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return color + " plus two";
     }
 

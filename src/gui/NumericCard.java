@@ -5,7 +5,6 @@
  */
 package gui;
 
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 
 /**
@@ -45,6 +44,7 @@ public class NumericCard extends Card {
         return number;
     }
 
+    @Override
     public boolean canPlay() {
         Card discard = Workspace.getDiscard();
         if (discard instanceof NumericCard) {
