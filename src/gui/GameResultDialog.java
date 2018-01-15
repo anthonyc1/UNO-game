@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -40,6 +41,7 @@ public class GameResultDialog extends Dialog {
     private void init(Stage primaryStage, String winner) {
         Dialog dialog = new Dialog();
         dialog.setTitle("UNO Game Result");
+        dialog.initStyle(StageStyle.UNDECORATED);
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);
@@ -68,13 +70,13 @@ public class GameResultDialog extends Dialog {
 
         HBox buttonsBar = new HBox(20);
 
-        Button quit = new Button("Back to Menu");
+        Button quit = new Button("Exit");
         quit.setStyle("-fx-background-color: red");
         quit.setMinWidth(75);
         quit.setOnAction(e -> {
             Stage stage = (Stage) closeButton.getScene().getWindow();
             stage.hide();
-            getGameSettingDialog();
+            System.exit(0);
         });
 
         Button proceed = new Button("Play Again");

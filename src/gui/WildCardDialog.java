@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -39,6 +40,7 @@ public class WildCardDialog extends Dialog {
     public void init(){
         Dialog dialog = new Dialog();
         dialog.setTitle("Select WildCard color");
+        dialog.initStyle(StageStyle.UNDECORATED);
         
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CLOSE);

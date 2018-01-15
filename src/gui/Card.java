@@ -65,16 +65,6 @@ public abstract class Card extends ImageView {
 
     public void playCardByOpponent() {
         goAgain = false;
-        try {
-            //        if (this instanceof WildCard) {
-//            String color = getWildCardDialog().getColor();
-//            ((WildCard) this).setColor(color);
-//        }
-            Thread.sleep(1000);
-            System.out.println("opponent plays");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
-        }
         if (this instanceof WildCard) {
             int chooseColor = (int) (100 * Math.random());
             if (chooseColor < 25) {
@@ -149,7 +139,6 @@ public abstract class Card extends ImageView {
         Workspace.setTurn("OPPONENT");
         setPlayerDialog("LAST PLAYED:\n" + this.toString());
         setDialog(turn + "'s turn");
-        System.out.println("player plays");
         Workspace.isGameOver(Workspace.getPrimaryStage());
         Workspace.callUNO();
         

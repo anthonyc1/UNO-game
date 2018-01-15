@@ -258,12 +258,13 @@ public class Workspace {
         info.setMinSize(100, 400);
         info.setSpacing(30);
         info.setAlignment(Pos.CENTER);
-        
+
         String name = GameSettingDialog.getName();
-        if (name == null)
+        if (name.isEmpty()) {
             playerName = new Label("Player");
-        else
+        } else {
             playerName = new Label(name);
+        }
         playerName.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         playerName.setTextFill(Color.WHITE);
 
@@ -482,14 +483,17 @@ public class Workspace {
     // determine if you need to call uno
     public static void callUNO() {
         int fiftyfifty = (int) (100 * Math.random());
-        if (fiftyfifty >= 50) {
-            if (turn.equals("PLAYER") && playerHandSize == 1 && playerCalledUno) {
+        opponentCalledUno = false;
+        if (playerHandSize == 1 && !playerCalledUno) {
+            if (fiftyfifty >= 50) {
                 setPlayerDialog("Fails to call UNO\nPLAYER draws two");
                 PlusTwo.playerDrawTwo();
                 playerCalledUno = false;
             }
+        } else if (playerHandSize == 1 && playerCalledUno){
+            playerCalledUno = false;
         }
-        if (turn.equals("OPPONENT") && opponentHandSize == 2) {
+        if (opponentHandSize == 1) {
             if (fiftyfifty < 50) {
                 opponentCalledUno = true;
                 setOpponentDialog("OPPONENT calls UNO");
@@ -552,12 +556,11 @@ public class Workspace {
     public static void setOpponentCards(ArrayList<Card> aOpponentCards) {
         opponentCards = aOpponentCards;
     }
-    
+
     public static void decrementPlayerHandSize() {
         playerHandSize--;
     }
 
-    
     public static void decrementOpponentHandSize() {
         opponentHandSize--;
     }
