@@ -1,5 +1,10 @@
 # multiplayerUNO
-Java Implementation of UNO Card game with GUI and TCP multiplayer functionality.
+JavaFX Implementation of UNO Card game.
+
+Two options:
+1) Play against the program.
+2) Play against another human. 
+
 Please read the game instructions pdf if you're unfamiliar with the card game rules.
 Enjoy!
 
@@ -26,7 +31,11 @@ For Windows users, the equivalent commands are:
 
 And presto! You can now run the main file:
 
-`$ java Game`
+`$ java Uno`
+
+## Screenshot of Game
+<img src="https://github.com/anthonyc1/multiplayerUNO/blob/master/images/gameboard.jpg" height="300px" width="450px">
+<br>
 
 ----
 
