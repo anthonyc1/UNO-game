@@ -3,11 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package uno.data;
 
-import static gui.Workspace.opponentCards;
-import static gui.Workspace.opponentHand;
-import static gui.Workspace.playerHand;
+import uno.gui.Workspace;
+import static uno.gui.Workspace.getOpponentCards;
+import static uno.gui.Workspace.getOpponentHand;
+import static uno.gui.Workspace.getOpponentHandSize;
+import static uno.gui.Workspace.getPlayerHand;
+import static uno.gui.Workspace.isDeckEmpty;
+import static uno.gui.Workspace.setDialog;
+import static uno.gui.Workspace.setOpponentHandSize;
+import static uno.gui.Workspace.setPlayerHandSize;
+import static uno.gui.Workspace.updateDeckText;
 import javafx.scene.image.Image;
 
 /**
@@ -27,7 +34,7 @@ public class PlusTwo extends Card {
                 playCardByPlayer();
 
             } else {
-                Workspace.setDialog("Invalid move");
+                setDialog("Invalid move");
             }
         });
     }
@@ -50,23 +57,23 @@ public class PlusTwo extends Card {
     }
 
     public static void opponentDrawTwo() {
-        opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
-        opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
-        opponentCards.add(Workspace.getDeckOfCards().remove(0));
-        Workspace.isDeckEmpty();
-        opponentCards.add(Workspace.getDeckOfCards().remove(0));
-        Workspace.isDeckEmpty();
-        Workspace.opponentHandSize += 2;
-        Workspace.updateDeckText();
+        getOpponentHand().getChildren().add(Data.getDeckOfCardbacks().remove(0));
+        getOpponentHand().getChildren().add(Data.getDeckOfCardbacks().remove(0));
+        getOpponentCards().add(Workspace.getDeckOfCards().remove(0));
+        isDeckEmpty();
+        getOpponentCards().add(Workspace.getDeckOfCards().remove(0));
+        isDeckEmpty();
+        setOpponentHandSize(getOpponentHandSize() + 2);
+        updateDeckText();
     }
     
     public static void playerDrawTwo() {
-        playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
-        Workspace.isDeckEmpty();
-        playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
-        Workspace.isDeckEmpty();
-        Workspace.playerHandSize += 2;
-        Workspace.updateDeckText();
+        getPlayerHand().getChildren().add(Workspace.getDeckOfCards().remove(0));
+        isDeckEmpty();
+        getPlayerHand().getChildren().add(Workspace.getDeckOfCards().remove(0));
+        isDeckEmpty();
+        setPlayerHandSize(Workspace.getPlayerHandSize() + 2);
+        updateDeckText();
     }
 
     @Override

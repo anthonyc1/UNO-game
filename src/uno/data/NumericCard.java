@@ -3,30 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package uno.data;
 
-import static gui.Workspace.opponentCards;
-import static gui.Workspace.opponentHand;
+import uno.gui.Workspace;
 import javafx.scene.image.Image;
 
 /**
  *
  * @author anthonychan
  */
-public class PlusOne extends Card {
+public class NumericCard extends Card {
 
     protected String color;
+    protected int number;
 
-    public PlusOne(Image image, int height, int width, String color) {
+    public NumericCard(Image image, int height, int width, String color, int number) {
         super(image, height, width);
         this.color = color;
+        this.number = number;
         setOnMouseClicked(e -> {
             if (Workspace.getTurn().equals("PLAYER") && canPlay()) {
-                opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
-                opponentCards.add(Workspace.getDeckOfCards().remove(0));
-                Workspace.isDeckEmpty();
-                Workspace.opponentHandSize++;
-                Workspace.updateDeckText();
                 playCardByPlayer();
             } else {
                 Workspace.setDialog("Invalid move");
@@ -35,13 +31,35 @@ public class PlusOne extends Card {
         });
     }
 
+    /**
+     * @return the color
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * @return the number
+     */
+    public int getNumber() {
+        return number;
+    }
+
     @Override
     public boolean canPlay() {
         Card discard = Workspace.getDiscard();
-        if (discard instanceof PlusOne) {
-            return true;
-        } else if (discard instanceof NumericCard) {
+        if (discard instanceof NumericCard) {
             if (((NumericCard) discard).color.equals(color)) {
+                return true;
+            } else if (((NumericCard) discard).number == number){
+                return true;
+            }
+        } else if (discard instanceof PlusOne) {
+            if (((PlusOne) discard).color.equals(color)) {
+                return true;
+            }
+        } else if (discard instanceof PlusTwo) {
+            if (((PlusTwo) discard).color.equals(color)) {
                 return true;
             }
         } else if (discard instanceof WildCard) {
@@ -54,7 +72,7 @@ public class PlusOne extends Card {
     
     @Override
     public String toString(){
-        return color + " plus one";
+        return color + " " + number;
     }
 
 }

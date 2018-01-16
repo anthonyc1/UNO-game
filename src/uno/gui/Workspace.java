@@ -3,9 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package uno.gui;
 
-import static gui.GameResultDialog.getGameResultDialog;
+import uno.data.Data;
+import uno.data.WildCard;
+import uno.data.Card;
+import uno.data.BackCard;
+import uno.data.PlusTwo;
+import static uno.gui.GameResultDialog.getGameResultDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -55,8 +60,8 @@ public class Workspace {
     HBox player;
     static HBox opponentHand;
     static HBox playerHand;
-    protected static int playerHandSize;
-    protected static int opponentHandSize;
+    static int playerHandSize;
+    static int opponentHandSize;
 
     static boolean playerCalledUno = false;
     static boolean opponentCalledUno = false;
@@ -120,7 +125,7 @@ public class Workspace {
         canvas.setBackground(bkg);
 
         //Load the stylesheet
-        scene.getStylesheets().add("css/style.css");
+        scene.getStylesheets().add("uno/css/style.css");
 
         // Event handling
         root = new StackPane();
@@ -150,8 +155,8 @@ public class Workspace {
         opponentCards = new ArrayList<>();
         discardedCards = new ArrayList<>();
 
-        playerHandSize = 0;
-        opponentHandSize = 0;
+        setPlayerHandSize(0);
+        setOpponentHandSize(0);
 
         back = new BackCard(image, 75, 50);
 
@@ -165,32 +170,32 @@ public class Workspace {
         player.setSpacing(100);
         player.setAlignment(Pos.CENTER);
 
-        opponentHand = new HBox();
-        opponentHand.setMinSize(500, 100);
-        opponentHand.setSpacing(20);
-        opponentHand.setAlignment(Pos.CENTER);
+        setOpponentHand(new HBox());
+        getOpponentHand().setMinSize(500, 100);
+        getOpponentHand().setSpacing(20);
+        getOpponentHand().setAlignment(Pos.CENTER);
 
-        playerHand = new HBox();
-        playerHand.setMinSize(500, 100);
-        playerHand.setSpacing(20);
-        playerHand.setAlignment(Pos.CENTER);
+        setPlayerHand(new HBox());
+        getPlayerHand().setMinSize(500, 100);
+        getPlayerHand().setSpacing(20);
+        getPlayerHand().setAlignment(Pos.CENTER);
 
         drawCard = new Button("Draw Card");
         drawCard.getStyleClass().add("drawcard");
         drawCard.setOnMouseClicked(e -> {
             if (turn.equals("PLAYER")) {
-                playerToDraw = true;
-                for (Node card : playerHand.getChildren()) {
+                setPlayerToDraw(true);
+                for (Node card : getPlayerHand().getChildren()) {
                     if (((Card) card).canPlay()) {
-                        playerToDraw = false;
+                        setPlayerToDraw(false);
                         break;
                     }
                 }
-                if (playerToDraw) {
+                if (isPlayerToDraw()) {
                     setPlayerDialog("PLAYER draws");
                     setDialog("OPPONENT goes");
-                    playerHand.getChildren().add(getDeckOfCards().remove(0));
-                    playerHandSize++;
+                    getPlayerHand().getChildren().add(getDeckOfCards().remove(0));
+                    setPlayerHandSize(getPlayerHandSize() + 1);
                     updateDeckText();
                     Workspace.isDeckEmpty();
 
@@ -198,18 +203,18 @@ public class Workspace {
                     setDialog(turn + "'s turn");
 
                     if (Workspace.getTurn().equals("OPPONENT")) {
-                        Workspace.opponentToDraw = true;
+                        Workspace.setOpponentToDraw(true);
                         for (Node card : Workspace.opponentCards) {
                             if (((Card) card).canPlay()) {
-                                Workspace.opponentToDraw = false;
+                                Workspace.setOpponentToDraw(false);
                                 ((Card) card).playCardByOpponent();
                                 break;
                             }
                         }
-                        if (Workspace.opponentToDraw) {
+                        if (Workspace.isOpponentToDraw()) {
                             setOpponentDialog("OPPONENT draws");
                             Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
-                            Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
+                            Workspace.getOpponentHand().getChildren().add(Data.getDeckOfCardbacks().remove(0));
                             Workspace.opponentHandSize++;
                             updateDeckText();
                         }
@@ -233,10 +238,10 @@ public class Workspace {
         callUno = new Button("Call Uno");
         callUno.getStyleClass().add("calluno");
         callUno.setOnMouseClicked(e -> {
-            if (playerHandSize == 2 && !playerToDraw()) {
+            if (getPlayerHandSize() == 2 && !playerToDraw()) {
                 setPlayerDialog("PLAYER calls UNO");
                 playerCalledUno = true;
-            } else if (opponentHandSize == 1 && !opponentCalledUno) {
+            } else if (getOpponentHandSize() == 1 && !opponentCalledUno) {
                 setOpponentDialog("Fails to call UNO\nOPPONENT draws two");
                 PlusTwo.opponentDrawTwo();
             } else {
@@ -250,8 +255,8 @@ public class Workspace {
             callUno.setEffect(null);
         });
 
-        player.getChildren().addAll(callUno, playerHand, drawCard);
-        opponent.getChildren().addAll(opponentHand);
+        player.getChildren().addAll(callUno, getPlayerHand(), drawCard);
+        opponent.getChildren().addAll(getOpponentHand());
 
         setCenterpile(new HBox());
         getCenterpile().setMinSize(300, 100);
@@ -376,11 +381,11 @@ public class Workspace {
 
         for (int i = 0; i < 10; i++) {
             if (i % 2 == 0) {
-                playerHand.getChildren().add(getDeckOfCards().remove(0));
-                playerHandSize++;
+                getPlayerHand().getChildren().add(getDeckOfCards().remove(0));
+                setPlayerHandSize(getPlayerHandSize() + 1);
             } else {
                 getOpponentCards().add(getDeckOfCards().remove(0));
-                opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
+                getOpponentHand().getChildren().add(Data.getDeckOfCardbacks().remove(0));
                 opponentHandSize++;
             }
         }
@@ -399,18 +404,18 @@ public class Workspace {
         //START GAME
 //        do {
         if (Workspace.getTurn().equals("OPPONENT")) {
-            Workspace.opponentToDraw = true;
+            Workspace.setOpponentToDraw(true);
             for (Node card : Workspace.opponentCards) {
                 if (((Card) card).canPlay()) {
-                    Workspace.opponentToDraw = false;
+                    Workspace.setOpponentToDraw(false);
                     ((Card) card).playCardByOpponent();
                     break;
                 }
             }
-            if (Workspace.opponentToDraw) {
+            if (Workspace.isOpponentToDraw()) {
                 setOpponentDialog("OPPONENT draws");
                 Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
-                Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
+                Workspace.getOpponentHand().getChildren().add(Data.getDeckOfCardbacks().remove(0));
                 Workspace.opponentHandSize++;
             }
             Workspace.setTurn("PLAYER");
@@ -461,11 +466,11 @@ public class Workspace {
     }
 
     public static void isGameOver(Stage primaryStage) {
-        if (playerHandSize == 0) {
+        if (getPlayerHandSize() == 0) {
             winner = "PLAYER";
             gameOver = true;
             getGameResultDialog(primaryStage, winner);
-        } else if (opponentHandSize == 0) {
+        } else if (getOpponentHandSize() == 0) {
             winner = "OPPONENT";
             gameOver = true;
             getGameResultDialog(primaryStage, winner);
@@ -475,29 +480,29 @@ public class Workspace {
     }
 
     public boolean playerToDraw() {
-        playerToDraw = true;
-        for (Node card : playerHand.getChildren()) {
+        setPlayerToDraw(true);
+        for (Node card : getPlayerHand().getChildren()) {
             if (((Card) card).canPlay()) {
-                playerToDraw = false;
+                setPlayerToDraw(false);
                 break;
             }
         }
-        return playerToDraw;
+        return isPlayerToDraw();
     }
 
     // determine if you need to call uno
     public static void callUNO() {
         int fiftyfifty = (int) (100 * Math.random());
         opponentCalledUno = false;
-        if (playerHandSize == 1 && !playerCalledUno) {
+        if (getPlayerHandSize() == 1 && !playerCalledUno) {
             if (fiftyfifty >= 50) {
                 setPlayerDialog("Fails to call UNO\nPLAYER draws two");
                 PlusTwo.playerDrawTwo();
             }
-        } else if (playerHandSize == 1 && playerCalledUno) {
+        } else if (getPlayerHandSize() == 1 && playerCalledUno) {
             playerCalledUno = false;
         }
-        if (opponentHandSize == 1) {
+        if (getOpponentHandSize() == 1) {
             if (fiftyfifty < 50) {
                 opponentCalledUno = true;
                 setOpponentDialog("OPPONENT calls UNO");
@@ -558,7 +563,7 @@ public class Workspace {
     }
 
     public static void decrementPlayerHandSize() {
-        playerHandSize--;
+        setPlayerHandSize(getPlayerHandSize() - 1);
     }
 
     public static void decrementOpponentHandSize() {
@@ -640,6 +645,90 @@ public class Workspace {
      */
     public static void setOpponentDialogText(Label aOpponentDialogText) {
         opponentDialogText = aOpponentDialogText;
+    }
+
+    /**
+     * @return the opponentHand
+     */
+    public static HBox getOpponentHand() {
+        return opponentHand;
+    }
+
+    /**
+     * @return the playerHand
+     */
+    public static HBox getPlayerHand() {
+        return playerHand;
+    }
+
+    /**
+     * @return the playerHandSize
+     */
+    public static int getPlayerHandSize() {
+        return playerHandSize;
+    }
+
+    /**
+     * @return the opponentHandSize
+     */
+    public static int getOpponentHandSize() {
+        return opponentHandSize;
+    }
+
+    /**
+     * @param aOpponentHand the opponentHand to set
+     */
+    public static void setOpponentHand(HBox aOpponentHand) {
+        opponentHand = aOpponentHand;
+    }
+
+    /**
+     * @param aPlayerHand the playerHand to set
+     */
+    public static void setPlayerHand(HBox aPlayerHand) {
+        playerHand = aPlayerHand;
+    }
+
+    /**
+     * @param aPlayerHandSize the playerHandSize to set
+     */
+    public static void setPlayerHandSize(int aPlayerHandSize) {
+        playerHandSize = aPlayerHandSize;
+    }
+
+    /**
+     * @param aOpponentHandSize the opponentHandSize to set
+     */
+    public static void setOpponentHandSize(int aOpponentHandSize) {
+        opponentHandSize = aOpponentHandSize;
+    }
+
+    /**
+     * @return the playerToDraw
+     */
+    public static boolean isPlayerToDraw() {
+        return playerToDraw;
+    }
+
+    /**
+     * @param aPlayerToDraw the playerToDraw to set
+     */
+    public static void setPlayerToDraw(boolean aPlayerToDraw) {
+        playerToDraw = aPlayerToDraw;
+    }
+
+    /**
+     * @return the opponentToDraw
+     */
+    public static boolean isOpponentToDraw() {
+        return opponentToDraw;
+    }
+
+    /**
+     * @param aOpponentToDraw the opponentToDraw to set
+     */
+    public static void setOpponentToDraw(boolean aOpponentToDraw) {
+        opponentToDraw = aOpponentToDraw;
     }
 
 }

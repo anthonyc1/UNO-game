@@ -3,14 +3,32 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package uno.data;
 
-import static gui.WildCardDialog.getWildCardDialog;
-import static gui.Workspace.playerHand;
-import static gui.Workspace.setDialog;
-import static gui.Workspace.setOpponentDialog;
-import static gui.Workspace.setPlayerDialog;
-import static gui.Workspace.turn;
+import uno.gui.Workspace;
+import static uno.gui.WildCardDialog.getWildCardDialog;
+import static uno.gui.Workspace.callUNO;
+import static uno.gui.Workspace.decrementOpponentHandSize;
+import static uno.gui.Workspace.decrementPlayerHandSize;
+import static uno.gui.Workspace.getCenterpile;
+import static uno.gui.Workspace.getDiscardedCards;
+import static uno.gui.Workspace.getOpponentCards;
+import static uno.gui.Workspace.getOpponentHand;
+import static uno.gui.Workspace.getPlayerHand;
+import static uno.gui.Workspace.getPlayerHandSize;
+import static uno.gui.Workspace.setDialog;
+import static uno.gui.Workspace.setOpponentDialog;
+import static uno.gui.Workspace.setPlayerDialog;
+import static uno.gui.Workspace.getTurn;
+import static uno.gui.Workspace.isDeckEmpty;
+import static uno.gui.Workspace.isGameOver;
+import static uno.gui.Workspace.setCenterpile;
+import static uno.gui.Workspace.setDiscard;
+import static uno.gui.Workspace.setOpponentHandSize;
+import static uno.gui.Workspace.setOpponentToDraw;
+import static uno.gui.Workspace.setPlayerHandSize;
+import static uno.gui.Workspace.setTurn;
+import static uno.gui.Workspace.updateDeckText;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;
@@ -78,41 +96,41 @@ public abstract class Card extends ImageView {
             }
 //            Workspace.setDialog("Wild " + ((WildCard) this).getColor());
         } else if (this instanceof PlusOne) {
-            playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
-            Workspace.isDeckEmpty();
-            Workspace.playerHandSize++;
-            Workspace.updateDeckText();
+            getPlayerHand().getChildren().add(Workspace.getDeckOfCards().remove(0));
+            isDeckEmpty();
+            setPlayerHandSize(getPlayerHandSize() + 1);
+            updateDeckText();
             goAgain = true;
         } else if (this instanceof PlusTwo) {
-            playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
-            Workspace.isDeckEmpty();
-            playerHand.getChildren().add(Workspace.getDeckOfCards().remove(0));
-            Workspace.isDeckEmpty();
-            Workspace.playerHandSize += 2;
-            Workspace.updateDeckText();
+            getPlayerHand().getChildren().add(Workspace.getDeckOfCards().remove(0));
+            isDeckEmpty();
+            getPlayerHand().getChildren().add(Workspace.getDeckOfCards().remove(0));
+            isDeckEmpty();
+            setPlayerHandSize(getPlayerHandSize() + 2);
+            updateDeckText();
             goAgain = true;
         }
         // add current discard card to list of discarded cards
-            Workspace.getDiscardedCards().add(Workspace.getDiscard());
+            getDiscardedCards().add(Workspace.getDiscard());
             // update the discard card in scene to newly played card
-            Workspace.setDiscard(this);
-            Workspace.getCenterpile().getChildren().clear();
-            Workspace.getCenterpile().getChildren().add(Workspace.getDiscard());
-            Workspace.setCenterpile(Workspace.getCenterpile());
+            setDiscard(this);
+            getCenterpile().getChildren().clear();
+            getCenterpile().getChildren().add(Workspace.getDiscard());
+            setCenterpile(Workspace.getCenterpile());
 
-            Workspace.opponentCards.remove(this);
-            Data.getDeckOfCardbacks().add((Card) Workspace.opponentHand.getChildren().remove(0));
+            getOpponentCards().remove(this);
+            Data.getDeckOfCardbacks().add((Card) Workspace.getOpponentHand().getChildren().remove(0));
 
-            Workspace.decrementOpponentHandSize();
-            Workspace.setTurn("PLAYER");
+            decrementOpponentHandSize();
+            setTurn("PLAYER");
             setOpponentDialog("LAST PLAYED:\n" + this.toString());
-            setDialog(turn + "'s turn");
-            Workspace.isGameOver(Workspace.getPrimaryStage());
-            Workspace.callUNO();
+            setDialog(getTurn() + "'s turn");
+            isGameOver(Workspace.getPrimaryStage());
+            callUNO();
             
         if (goAgain) {
-            Workspace.setTurn("OPPONENT");
-            setDialog(turn + " goes again");
+            setTurn("OPPONENT");
+            setDialog(getTurn() + " goes again");
             opponentPlayLogic();
         }
     }
@@ -128,50 +146,50 @@ public abstract class Card extends ImageView {
             goAgain = true;
         }
         // add current discard card to list of discarded cards
-        Workspace.getDiscardedCards().add(Workspace.getDiscard());
+        getDiscardedCards().add(Workspace.getDiscard());
         // update the discard card in scene to newly played card
-        Workspace.setDiscard(this);
-        Workspace.getCenterpile().getChildren().clear();
-        Workspace.getCenterpile().getChildren().add(Workspace.getDiscard());
-        Workspace.setCenterpile(Workspace.getCenterpile());
+        setDiscard(this);
+        getCenterpile().getChildren().clear();
+        getCenterpile().getChildren().add(Workspace.getDiscard());
+        setCenterpile(Workspace.getCenterpile());
 
-        Workspace.decrementPlayerHandSize();
-        Workspace.setTurn("OPPONENT");
+        decrementPlayerHandSize();
+        setTurn("OPPONENT");
         setPlayerDialog("LAST PLAYED:\n" + this.toString());
-        setDialog(turn + "'s turn");
-        Workspace.isGameOver(Workspace.getPrimaryStage());
-        Workspace.callUNO();
+        setDialog(getTurn() + "'s turn");
+        isGameOver(Workspace.getPrimaryStage());
+        callUNO();
         
         if (!goAgain){
             opponentPlayLogic();
         } else {
-            Workspace.setTurn("PLAYER");
-            setDialog(turn + " goes again");
+            setTurn("PLAYER");
+            setDialog(getTurn() + " goes again");
         }
 
     }
     
     public void opponentPlayLogic(){
-        if (Workspace.getTurn().equals("OPPONENT")) {
-            Workspace.opponentToDraw = true;
-            for (Node card : Workspace.opponentCards) {
+        if (getTurn().equals("OPPONENT")) {
+            setOpponentToDraw(true);
+            for (Node card : getOpponentCards()) {
                 if (((Card) card).canPlay()) {
-                    Workspace.opponentToDraw = false;
+                    setOpponentToDraw(false);
                     ((Card) card).playCardByOpponent();
                     break;
                 }
             }
-            if (Workspace.opponentToDraw) {
+            if (Workspace.isOpponentToDraw()) {
                 setOpponentDialog("OPPONENT draws");
-                Workspace.opponentCards.add(Workspace.getDeckOfCards().remove(0));
-                Workspace.opponentHand.getChildren().add(Data.getDeckOfCardbacks().remove(0));
-                Workspace.opponentHandSize++;
-                Workspace.updateDeckText();
+                getOpponentCards().add(Workspace.getDeckOfCards().remove(0));
+                getOpponentHand().getChildren().add(Data.getDeckOfCardbacks().remove(0));
+                setOpponentHandSize(Workspace.getOpponentHandSize() + 1);
+                updateDeckText();
             }
             
-            Workspace.setTurn("PLAYER");
-            setDialog(turn +"'s turn");
-            Workspace.isDeckEmpty();
+            setTurn("PLAYER");
+            setDialog(getTurn() +"'s turn");
+            isDeckEmpty();
         }
     }
 

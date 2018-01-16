@@ -1,9 +1,12 @@
-package gui;
+package uno;
 
-import static gui.GameSettingDialog.getGameSettingDialog;
+import uno.data.Data;
+import static uno.gui.GameSettingDialog.getGameSettingDialog;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import static tcp.MultiplayerDialog.getMultiplayerDialog;
+import uno.gui.GameSettingDialog;
+import uno.gui.Workspace;
+import static uno.tcp.MultiplayerDialog.getMultiplayerDialog;
 
 public class Uno extends Application {
     Workspace workspace;
