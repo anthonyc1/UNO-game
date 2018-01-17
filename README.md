@@ -16,22 +16,11 @@ To run this game on your local machine, open command line and navigate to where 
 ## Run
 For Mac/Linux users, here's a neat trick you can do on command line to compile multiple java files with a few short commands:
 
-*Note: make sure you're in the directory will all the java files you need to compile*
+*Note: navigate to the "dist" folder in the directory.*
 
-`$ find . -name "*.java" > sources.txt`
+`$ java -jar MultiplayerUNO.jar`
 
-`$ javac @sources.txt`
-
-For Windows users, the equivalent commands are:
-
-`> dir /s /B *.java > sources.txt`
-
-`> javac @sources.txt`
-
-
-And presto! You can now run the main file:
-
-`$ java Uno`
+And presto! The program is now running.
 
 ## Screenshot of Game
 <img src="https://github.com/anthonyc1/multiplayerUNO/blob/master/images/gameboard.jpg" height="350px" width="550px">
