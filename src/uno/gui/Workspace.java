@@ -45,6 +45,8 @@ public class Workspace {
 
     Data dataManager;
     static protected Stage primaryStage;
+    
+    protected static final String userHome = System.getProperty("user.home");
 
     BorderPane canvas;
     StackPane root;
@@ -113,7 +115,7 @@ public class Workspace {
         canvas.setMinSize(1000, 600);
         scene = new Scene(canvas);
 
-        file = new File("images/green.jpg");
+        file = new File(userHome + "/Desktop/multiplayerUNO/images/green.jpg");
         image = new Image("file:" + file.getPath());
         //ImageView imageView = new ImageView(image);
         double height = canvas.getMinHeight();
@@ -335,7 +337,7 @@ public class Workspace {
         player.setAlignment(Pos.CENTER);
         //root.getStyleClass().add("field");
 
-        cardback = new File("resources/back.jpg");
+        cardback = new File(userHome + "/Desktop/multiplayerUNO/resources/back.jpg");
         image = new Image("file:" + cardback.getPath());
 
         deck = new BackCard(image, 75, 50);
@@ -729,6 +731,13 @@ public class Workspace {
      */
     public static void setOpponentToDraw(boolean aOpponentToDraw) {
         opponentToDraw = aOpponentToDraw;
+    }
+
+    /**
+     * @return the userHome
+     */
+    public static String getUserHome() {
+        return userHome;
     }
 
 }

@@ -49,7 +49,7 @@ public class GameSettingDialog extends Dialog {
 //        closeButton.managedProperty().bind(closeButton.visibleProperty());
 //        closeButton.setVisible(false);
 
-        File file = new File("images/uno_cards.jpg");
+        File file = new File("/Users/anthonychan/Desktop/multiplayerUNO/images/uno_cards.jpg");
         Image image = new Image("file:" + file.getPath());
         ImageView imageview = new ImageView(image);
         imageview.setFitHeight(120);

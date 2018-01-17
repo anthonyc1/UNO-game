@@ -19,12 +19,15 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import static uno.gui.Workspace.getUserHome;
 
 /**
  *
  * @author anthonychan
  */
 public class Data {
+    
+    
     
     protected static ArrayList<Card> deck;
     protected static ArrayList<Card> discard;
@@ -139,6 +142,8 @@ public class Data {
     static Card wild2;
     static Card wild3;
     static Card wild4;
+    
+    String userHome;
             
 
     public Data() {
@@ -164,40 +169,42 @@ public class Data {
         discard = new ArrayList<>();
         playerHand = new ArrayList<>();
         opponentHand = new ArrayList<>();
+        
+        userHome = getUserHome() + "/Desktop/multiplayerUNO/resources/";
 
-        blue1card = new File("resources/1_blue.jpg");
-        green1card = new File("resources/1_green.jpg");
-        red1card = new File("resources/1_red.jpg");
-        yellow1card = new File("resources/1_yellow.jpg");
-        blue2card = new File("resources/2_blue.jpg");
-        green2card = new File("resources/2_green.jpg");
-        red2card = new File("resources/2_red.jpg");
-        yellow2card = new File("resources/2_yellow.jpg");
-        blue3card = new File("resources/3_blue.jpg");
-        green3card = new File("resources/3_green.jpg");
-        red3card = new File("resources/3_red.jpg");
-        yellow3card = new File("resources/3_yellow.jpg");
-        blue4card = new File("resources/4_blue.jpg");
-        green4card = new File("resources/4_green.jpg");
-        red4card = new File("resources/4_red.jpg");
-        yellow4card = new File("resources/4_yellow.jpg");
-        blue5card = new File("resources/5_blue.jpg");
-        green5card = new File("resources/5_green.jpg");
-        red5card = new File("resources/5_red.jpg");
-        yellow5card = new File("resources/5_yellow.jpg");
-        blue6card = new File("resources/6_blue.jpg");
-        green6card = new File("resources/6_green.jpg");
-        red6card = new File("resources/6_red.jpg");
-        yellow6card = new File("resources/6_yellow.jpg");
-        blue7card = new File("resources/7_blue.jpg");
-        green7card = new File("resources/7_green.jpg");
-        red7card = new File("resources/7_red.jpg");
-        yellow7card = new File("resources/7_yellow.jpg");
-        blue1pluscard = new File("resources/1_plus_blue.jpg");
-        red1pluscard = new File("resources/1_plus_red.jpg");
-        green2pluscard = new File("resources/2_plus_green.jpg");
-        yellow2pluscard = new File("resources/2_plus_yellow.jpg");
-        wildcard = new File("resources/wild.jpg");
+        blue1card = new File(userHome + "1_blue.jpg");
+        green1card = new File(userHome + "1_green.jpg");
+        red1card = new File(userHome + "1_red.jpg");
+        yellow1card = new File(userHome + "1_yellow.jpg");
+        blue2card = new File(userHome + "2_blue.jpg");
+        green2card = new File(userHome + "2_green.jpg");
+        red2card = new File(userHome + "2_red.jpg");
+        yellow2card = new File(userHome + "2_yellow.jpg");
+        blue3card = new File(userHome + "3_blue.jpg");
+        green3card = new File(userHome + "3_green.jpg");
+        red3card = new File(userHome + "3_red.jpg");
+        yellow3card = new File(userHome + "3_yellow.jpg");
+        blue4card = new File(userHome + "4_blue.jpg");
+        green4card = new File(userHome + "4_green.jpg");
+        red4card = new File(userHome + "4_red.jpg");
+        yellow4card = new File(userHome + "4_yellow.jpg");
+        blue5card = new File(userHome + "5_blue.jpg");
+        green5card = new File(userHome + "5_green.jpg");
+        red5card = new File(userHome + "5_red.jpg");
+        yellow5card = new File(userHome + "5_yellow.jpg");
+        blue6card = new File(userHome + "6_blue.jpg");
+        green6card = new File(userHome + "6_green.jpg");
+        red6card = new File(userHome + "6_red.jpg");
+        yellow6card = new File(userHome + "6_yellow.jpg");
+        blue7card = new File(userHome + "7_blue.jpg");
+        green7card = new File(userHome + "7_green.jpg");
+        red7card = new File(userHome + "7_red.jpg");
+        yellow7card = new File(userHome + "7_yellow.jpg");
+        blue1pluscard = new File(userHome + "1_plus_blue.jpg");
+        red1pluscard = new File(userHome + "1_plus_red.jpg");
+        green2pluscard = new File(userHome + "2_plus_green.jpg");
+        yellow2pluscard = new File(userHome + "2_plus_yellow.jpg");
+        wildcard = new File(userHome + "wild.jpg");
 
         blue1 = new NumericCard(new Image("file:" + blue1card.getPath()), 75, 50, "blue", 1);
         green1 = new NumericCard(new Image("file:" + green1card.getPath()), 75, 50, "green", 1);
@@ -308,7 +315,7 @@ public class Data {
     }
     
     private void setupCardbacks(){
-        cardback = new File("resources/back.jpg");
+        cardback = new File(userHome + "back.jpg");
         image = new Image("file:" + cardback.getPath());
         back = new BackCard(image, 75, 50);
         back2 = new BackCard(image, 75, 50);
