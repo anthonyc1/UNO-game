@@ -69,9 +69,9 @@ public class GameSettingDialog extends Dialog {
         name.setPromptText("your display name");
         singleplayer.getChildren().addAll(setting1, name);
         
-        Button setting2 = new Button("Multi Player");
-        setting2.setMinWidth(120);
-        setting2.setStyle("-fx-background-color: lightgray");
+//        Button setting2 = new Button("Multi Player");
+//        setting2.setMinWidth(120);
+//        setting2.setStyle("-fx-background-color: lightgray");
 
 //        setting3.setOnAction(e -> {
 //            setting = 3;
@@ -103,17 +103,17 @@ public class GameSettingDialog extends Dialog {
         setting1.setOnAction(e -> {
             setting = 1;
             setting1.setStyle("-fx-background-color: lightgreen");
-            setting2.setStyle("-fx-background-color: lightgray");
+            //setting2.setStyle("-fx-background-color: lightgray");
             proceed.setDisable(false);
         });
-        setting2.setOnAction(e -> {
-            setting = 2;
-            setting1.setStyle("-fx-background-color: lightgray");
-            setting2.setStyle("-fx-background-color: lightgreen");
-            proceed.setDisable(false);
-        });
+//        setting2.setOnAction(e -> {
+//            setting = 2;
+//            setting1.setStyle("-fx-background-color: lightgray");
+//            setting2.setStyle("-fx-background-color: lightgreen");
+//            proceed.setDisable(false);
+//        });
 
-        body.getChildren().addAll(gameplayDetails, imageview, singleplayer, setting2, buttonsBar);
+        body.getChildren().addAll(gameplayDetails, imageview, singleplayer, /*setting2,*/ buttonsBar);
 
         BorderPane container = new BorderPane();
         container.setCenter(body);
