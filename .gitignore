@@ -1,7 +1,5 @@
 /build/
-/nbproject/private/
 .classpath
 manifest.mf
 build.xml
 nbproject/
-/dist/
