@@ -1,4 +1,4 @@
-# multiplayerUNO
+# UNO-game
 JavaFX Implementation of UNO Card game.
 
 Please read the game instructions pdf if you're unfamiliar with the card game rules.
